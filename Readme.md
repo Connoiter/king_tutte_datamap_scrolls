@@ -1,38 +1,52 @@
 # King Tutte Scrolls
 
+Large collections of neural embedding vectors are proliferating
+rapidly. For example, each vector database and RAG library is consists
+of such a collection at its core. Datamaps are web-tech based,
+interactive visulizations of embedding vector collections.
+
 These "scrolls" (read: code and docs) are an agglomeration of
-permissively licensed repos and web content for building datamaps, the
-bulk of which originates out of the Tutte Institute in Canada -- hence
-the nod to them in this repo's name.
+permissively licensed repos and web content related to building
+datamaps, the bulk of which originates out of the Tutte Institute in
+Canada -- hence the nod to them in this repo's name.
 
-Large collections of neural embedding vectors are proliferating. Each
-vector database and RAG library is one at its core. Datamaps are
-web-tech based, interactive visulizations of embedding vector
-collections.
-
-The goal of this King Tutte Scrolls repo is to create a one-stop shop
-for those coders (both coding humans and coding daemons) wishing to
-bang out datamaps of any "AI-ready data," that is, data that is or
-comes with embedding vectors.
+The *goal* of this King Tutte Scrolls repo is to *create a one-stop
+shop* for those coders wishing to bang out datamaps of any "AI-ready
+data," that is, data with embedding vectors.
 
 <img src="./images/king_tutte_funerary_mask.png" width="100%" />
 
 ## Use cases
 
-An AI coder LLM can immediately use this repo simply by telling the
+An *AI coding LLM* can immediately use this repo simply by telling the
 LLM to check out [connoiter.com](https://connoiter.com). It will find
 the content of this repo, the King Tutte Scrolls, transcribed to
 context window-friendly markdown via the llms.txt file on
-connoiter.com.
+connoiter.com. Or equivalently use
+[gitinjest](https://github.com/coderamp-labs/gitingest);
+connoiter.com simply hosts the pre-rendered results of running this
+repo through gitinjest.
 
-For conference workshop contexts, there are Jupyter notebooks amongst
-these scrolls are designed to run on Colab. This set-up is free, has
-no set-up hassles, including free GPUs, and is scalable for large
-workshops. Afterwords, folks can continue to hack on their own verions
-of what they were working on at the workshop, which should help
-diffuse these datamap innovations.
+A *solo human coder* can use the King Tutte Scrolls for self-study. The
+content (code and docs) has been curated and commentary in included.
 
-## Tutte juxt Tut
+For *conference workshop contexts*, there are Jupyter notebooks
+amongst these scrolls are designed to run on Colab. Most of the code
+has been previously written, including most of the Jupyter notebooks,
+but they have been tweaked as needed to ensure they all work out of
+the box on Google's Colab service.
+
+For workshops, a Colab-based set-up is:
+- free
+- including optional free GPUs
+- involved no set-up hassles beyond asking to use a GPU
+- is scalable for large workshops.  
+
+After a workshop is completed, attendees can continue to hack on their
+own verions of the notebooks they were working on at the workshop,
+which should help diffuse these datamap innovations.
+
+## Tut juxt Tutte
 
 ### The Tutte Institute
 
