@@ -1,8 +1,20 @@
 # King Tutte Scrolls
 
 An agglomeration of permissively licensed code and docs for building
-datamaps, the bulk of which actually comes out of the Tutte Institute
+datamaps, the bulk of which originates out of the Tutte Institute
 in Canada. 
+
+Large collections of neural embedding vectors are proliferating. Each
+vector database and RAG library is one at its core. Datamaps are
+web-tech based, interactive visulizations of embedding vector
+collections.
+<img src="./images/king_tutte_funerary_mask.png" width="100%" />
+
+## Description
+
+The goal of this King Tutte Scrolls repo is to create a one-stop shop
+for those coders (both coding humans and coding daemons) wishing to
+bang out datamaps.
 
 An AI coder LLM can immediately use this repo simply by telling the
 LLM to check out [connoiter.com](https://connoiter.com). It will find
@@ -10,22 +22,16 @@ the content of this repo, the King Tutte Scrolls, transcribed to
 context window-friendly markdown via the llms.txt file on
 connoiter.com.
 
-<img src="./images/king_tutte_funerary_mask.png" width="100%" />
-
-## Description
-
-The goal is to create a one-stop shop for those coders (both
-humans and daemons) wishing to bang out datamaps. The contained info
-can be used in workshops and coding sessions.
-
-
-
-
-
+For conference workshop contexts, there are Jupyter notebooks amongst
+these scrolls are designed to run on Colab. This set-up is free, has
+no set-up hassles, including free GPUs, and is scalable for large
+workshops. Afterwords, folks can continue to hack on their own verions
+of what they were working on at the workshop, which should help
+diffuse these datamap innovations.
 
 ## Background
 
-### The Tutte Institue
+### The Tutte Institute
 
 <a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
 <img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
@@ -80,15 +86,18 @@ come out of the Tutte Instutute. Packaged with lots of documentation
 and sample code, it's a single git repo that a software writer can
 read in order to learn how to make and tune datamaps.
 
+# Deploying
 
 Bonus, it would be trivial to run this repo through
 [gitingest](https://github.com/coderamp-labs/gitingest) and feed the
 markdown-based output to a transformer-based LLM programming
-assistant, a.k.a. ka code daemon. With this repo in its context
-window, it should be able to crank out Python code to make datamaps,
-which are webUI(HTML&JS&c.) widgets that run live inside notebooks (Jupyter
-and Marimo) or can be exported as stand-along static file HTML
-web-apps that can be run in browsers later.
+assistant, a.k.a. ka code daemon. 
+
+With this repo in its context window, it should be able to crank out
+Python code to make datamaps, which are webUI(HTML&JS&c.) widgets that
+run live inside notebooks (Jupyter and Marimo) or can be exported as
+    stand-along static file HTML web-apps that can be run in browsers
+later.
 
 For convenience, a pre-built run of this repo through gitingest is
 available at:
