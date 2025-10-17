@@ -1,20 +1,23 @@
 # King Tutte Scrolls
 
-An agglomeration of permissively licensed code and docs for building
-datamaps, the bulk of which originates out of the Tutte Institute
-in Canada. 
+These "scrolls" (read: code and docs) are an agglomeration of
+permissively licensed repos and web content for building datamaps, the
+bulk of which originates out of the Tutte Institute in Canada -- hence
+the nod to them in this repo's name.
 
 Large collections of neural embedding vectors are proliferating. Each
 vector database and RAG library is one at its core. Datamaps are
 web-tech based, interactive visulizations of embedding vector
 collections.
-<img src="./images/king_tutte_funerary_mask.png" width="100%" />
-
-## Description
 
 The goal of this King Tutte Scrolls repo is to create a one-stop shop
 for those coders (both coding humans and coding daemons) wishing to
-bang out datamaps.
+bang out datamaps of any "AI-ready data," that is, data that is or
+comes with embedding vectors.
+
+<img src="./images/king_tutte_funerary_mask.png" width="100%" />
+
+## Use cases
 
 An AI coder LLM can immediately use this repo simply by telling the
 LLM to check out [connoiter.com](https://connoiter.com). It will find
@@ -29,13 +32,16 @@ workshops. Afterwords, folks can continue to hack on their own verions
 of what they were working on at the workshop, which should help
 diffuse these datamap innovations.
 
-## Background
+## Tutte juxt Tut
 
 ### The Tutte Institute
 
-<a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
-<img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
-</a>
+<figure>
+    <a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
+        <img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
+    </a>
+    <figcapture>Tutte at Cambridge</figcapture>
+</figure>
 
 [The Tutte Institute for Mathematics and Computing
 (TIMC)](https://www.cse-cst.gc.ca/en/mission/research-cse/tutte-institute-mathematics-computing)
