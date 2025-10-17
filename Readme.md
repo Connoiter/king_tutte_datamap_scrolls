@@ -97,7 +97,7 @@ site's llms.txt file.
 Multiple Tutte Institute repos|tools|softwares can be chained together in a regular datamap pipeline.
 
 <a href="https://connoiter.com/blog/data_map_pipeline/">
-<img src="data_map_pipeline.jpeg" width="80%" />
+<img src="images/data_map_pipeline.jpeg" width="80%" />
 </a>
 
 These repos can be configured together to implement –– amongst other
