@@ -1,15 +1,22 @@
 # King Tutte Scrolls
 
-<img src="./images/king_tutte_funerary_mask.png" width="100%" />
-
 An agglomeration of permissively licensed code and docs for building
 datamaps, the bulk of which actually comes out of the Tutte Institute
-in Canada. The goal is to make it easy for coder (both humans and daemons)
-to bang out datamaps.
+in Canada. 
+
+The goal is to create a one-stop shop for those coders (both
+humans and daemons) wishing to bang out datamaps. The contained info
+can be used in workshops and coding sessions.
+
+<img src="./images/king_tutte_funerary_mask.png" width="100%" />
 
 ## Background
 
 ### History
+
+<a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
+<img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
+</a>
 
 [The Tutte Institute for Mathematics and Computing
 (TIMC)](https://www.cse-cst.gc.ca/en/mission/research-cse/tutte-institute-mathematics-computing)
@@ -20,10 +27,6 @@ WW2, he was working alongside the likes of Alan Turing cracking the
 Nazi's encrypted comms at Bletchley Park. Tutte worked to crack the
 German High Command comms code known as "Fish," a nut harder to crack
 than the more famous Enigma machine cracking.
-
-<a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
-<img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
-</a>
 
 Separately, King Tutankhamun, also known as **King Tut** (not Tutte),
 was an Egyptian pharaoh who ruled c. 1332 – 1323 BC during the late
