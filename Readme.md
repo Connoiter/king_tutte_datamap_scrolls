@@ -4,6 +4,12 @@ An agglomeration of permissively licensed code and docs for building
 datamaps, the bulk of which actually comes out of the Tutte Institute
 in Canada. 
 
+An AI coder LLM can immediately use this repo simply by telling the
+LLM to check out [connoiter.com](https://connoiter.com). It will find
+the content of this repo, the King Tutte Scrolls, transcribed to
+context window-friendly markdown via the llms.txt file on
+connoiter.com.
+
 <img src="./images/king_tutte_funerary_mask.png" width="100%" />
 
 ## Description
@@ -52,7 +58,7 @@ also known as **King Tut** (not Tutte), was an Egyptian pharaoh who
 ruled around 1332 to 1323 BC. King Tut has been immortalized in song
 [(on YouTube)](https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0).
 
-## King Tutte
+## King Tutte Scrolls
 
 Back to modern times: some of the folks at TIMC are high dimensional
 mathemeticians, a type of scientist not a type of engineer. They have
@@ -73,6 +79,7 @@ which is essentially just a datamap toolbox, full of tools that mostly
 come out of the Tutte Instutute. Packaged with lots of documentation
 and sample code, it's a single git repo that a software writer can
 read in order to learn how to make and tune datamaps.
+
 
 Bonus, it would be trivial to run this repo through
 [gitingest](https://github.com/coderamp-labs/gitingest) and feed the
