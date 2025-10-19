@@ -4,7 +4,7 @@ This repo is a how-to manual for building "King Tutte pipelines,"
 which generate
 [datamaps](https://www.youtube.com/watch?v=r8dWZX8IGw8&ab_channel=PyData)
 of collections of embedding vectors. These pipelines are assembled
-from permissively licensed open source components developed by the
+from permissively licensed open source components developed primarily by the
 [The Tutte Institute for Mathematics and Computing
 (TIMC)](https://www.cse-cst.gc.ca/en/mission/research-cse/tutte-institute-mathematics-computing)
 out of Canada, hence the name "King Tutte."
@@ -45,14 +45,14 @@ that produce datamaps, which herein are called King Tutte
 pipelines. These Tutte Institute tools include UMAP, HDBSCAN, 
 DataMapPlot, Toponymy, EVōC, Vectorizers, and Glasbly.
 
-Some of the tools are simply combinations their tools configured for a
+Some of the tools are simply combinations of their tools configured for a
 specific use case. For example,
 [EVōC](https://github.com/TutteInstitute/evoc) is essentially just
 UMAP followed by HDBSCAN (two separate Tutte Institute innovations),
 with both components tuned for the purpose of working with embedding
 vectors.
 
-For pedological purpose, ignore such valuable optimations. The core
+For pedological purpose, ignore such valuable optimations for now. The core
 architecture of King Tutte pipelines has a regular structure.
 
 <a href="https://connoiter.com/blog/data_map_pipeline/">
@@ -66,12 +66,12 @@ example, the original implementation of UMAP is distributed as the
 package,
 [umap-learn](https://pypi.org/project/umap-learn/). Subsequently, as
 part of their RAPIDS initiative NVIDIA banged out an implementation of
-UMAP that runs on their hardware, even [claiming speed ups as high as
+UMAP that runs on their hardware, even [claiming speed-ups as high as
 300x over
 umap-learn](https://medium.com/rapids-ai/rapids-24-08-better-scalability-performance-and-cpu-gpu-interoperability-f88086386da6)
 (300 times faster, not 300 percent faster!). That code is licensed
 under the Apache 2.0 license so, of course, the King Tutte Scrolls
-include implemenations which use NVIDIAs version. This is not the only
+include implemenations which use NVIDIA's version. This is not the only
 instance were non Tutte Institute code is used herein. There is also
 [torchDR](https://github.com/TorchDR/TorchDR) and the list goes on.
 As long as the code is high quality and permissively licensed (Apache,
@@ -79,6 +79,8 @@ MIT, BSD, etc.) it is fodder for the King Tutte Scrolls.
 
 
 ## Use cases
+
+These King Tutte Scrolls have multiple envisioned use cases.
 
 ### Self-study
 
@@ -91,13 +93,15 @@ hosted on connoiter.com]().
 
 ### Workshops
 
-For **conference workshop contexts**, there are Jupyter notebooks
-amongst these scrolls which are designed to run on Colab. Most of the
-code has been previously written elsewhere -- including most of the Jupyter
-notebooks -- but they have been tweaked as needed to ensure they all
-work out of the box on Google's Colab service. (The same goes for the 
-documentation: most was written elsewhere, and simply converted from
-ReStructure Text (for Sphinx) to MyST (for Jupyter Book)).
+One of the deliverables of this repo is a Jupyter Book (v2) known as
+the King Tutte Pipelines Jupyter Book.  For **conference workshop
+contexts**, it includes Jupyter notebooks guaranteed to run on
+Colab. Most of that code has been previously written elsewhere but
+they have been tweaked as needed to ensure they all work out of the
+box on Google's Colab service. (Similarly, the same goes for the
+documentation: most was written elsewhere, and as needed simply
+converted from ReStructure Text (for Sphinx) to MyST (for Jupyter
+Book 2)).
 
 For workshops, a Colab-based set-up is:
 - free
@@ -141,7 +145,6 @@ later in this document, in [the Building section](#building).)
     <a href="https://newmarkethistory.org.uk/newmarket-people/personalities/professor-william-tutte/">
         <img src="./images/tutte_at_cambridge.jpg" width="30%" align="right" alt="Tutte's Cambridge undergraduate portrait" />
     </a>
-    <figcapture>Tutte at Cambridge</figcapture>
 </figure>
 
 [The Tutte Institute for Mathematics and Computing
@@ -154,16 +157,16 @@ encrypted comms at Bletchley Park. Later he became a Canadian citizen.
 
 Notably, Tutte worked to crack the German High Command communications
 code known by the Allies as “Fish,” an even tougher nut to crack than
-the more famous Enigma machine. Feel free to nerd out on his tools
-such as the Δ and double-delta methods, wherein the cracker digitally
-simulated mechanical wheel-based crypto comm boxes. It can be thought
-of as an en silico picking of physical locks by tuning into (via XOR
-filters on bit streams) their encrypted digital broadcasts. Bonus
-points to the man, during the war the Allies never captured a Lorenz
-machine (which generated Fish code). In contrast, for Enigma they had
-a machine including its code books, which proved quite handy while
-reverse enginering the machine, otherwise all one'd have to go on is
-the ciphertext to work it all out. :(
+the more well-known Enigma machine. Feel free to nerd out on tools he
+developed such as the Δ and double-delta methods, wherein the cracker
+digitally simulated mechanical wheel-based crypto comm boxes. It can
+be thought of as an en silico picking of physical locks by tuning into
+(via XOR filters on bit streams) their encrypted digital
+broadcasts. Bonus points to the man, during the war the Allies never
+captured a Lorenz machine (which generated Fish code). In contrast,
+for Enigma they had a machine including its code books, which proved
+quite handy while reverse enginering the Enigma machine, otherwise all one'd
+have to go on is the ciphertext to work it all out. :(
 
 Perhaps his work which is closest to this datamap technology is to be
 found in his 1963 paper, [How to Draw a
@@ -179,7 +182,12 @@ In ancient Egypt during the late Eighteenth Dynasty, King Tutankhamun,
 also known as **King Tut** (not Tutte), was an Egyptian pharaoh who
 ruled around 1332 to 1323 BC. King Tut has been immortalized in song,
 as [can be seen on
-YouTube)](https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0).
+YouTube](https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0).
+
+<div align="center">
+  <img src="./images/king_tutte_at_the_mic.png" width="50%" />
+</div>
+
 
 ### King Tutte
 
