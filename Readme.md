@@ -9,7 +9,9 @@ from permissively licensed open source components developed primarily by the
 (TIMC)](https://www.cse-cst.gc.ca/en/mission/research-cse/tutte-institute-mathematics-computing)
 out of Canada, hence the name "King Tutte."
 
+<a href="https://en.wikipedia.org/wiki/Mask_of_Tutankhamun">
 <img src="./images/king_tutte_funerary_mask.png" width="100%" />
+</a>
 
 ## Introduction
 
