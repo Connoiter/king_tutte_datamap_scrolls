@@ -18,7 +18,7 @@ out of Canada, hence the name "King Tutte."
 Large collections of neural embedding vectors are proliferating
 rapidly. For example, at its core every vector database and RAG
 knowledge base consists of such a collection. Datamaps make for great
-web-tech based, interactive visulizations of embedding vector
+web-tech based, interactive visualizations of embedding vector
 collections, enabling an overview of a collection and exploratory
 data analysis.
 
@@ -44,8 +44,15 @@ distros](https://connoiter.com/king_tutte_scrolls/distros/).
 
 Multiple Tutte Institute tools can be chained together into pipelines
 that produce datamaps, which herein are called King Tutte
-pipelines. These Tutte Institute tools include UMAP, HDBSCAN, 
-DataMapPlot, Toponymy, EVōC, Vectorizers, and Glasbly.
+pipelines. These Tutte Institute tools include:
+- UMAP
+- HDBSCAN, 
+- DataMapPlot
+- Toponymy
+- EVōC
+- TNT
+- Vectorizers
+- Glasbly
 
 Some of the tools are simply combinations of their tools configured for a
 specific use case. For example,
@@ -54,7 +61,7 @@ UMAP followed by HDBSCAN (two separate Tutte Institute innovations),
 with both components tuned for the purpose of working with embedding
 vectors.
 
-For pedological purpose, ignore such valuable optimations for now. The core
+For pedological purposes, ignore such valuable optimizations for now. The core
 architecture of King Tutte pipelines has a regular structure.
 
 <a href="https://connoiter.com/blog/data_map_pipeline/">
@@ -73,8 +80,8 @@ UMAP that runs on their hardware, even [claiming speed-ups as high as
 umap-learn](https://medium.com/rapids-ai/rapids-24-08-better-scalability-performance-and-cpu-gpu-interoperability-f88086386da6)
 (300 times faster, not 300 percent faster!). That code is licensed
 under the Apache 2.0 license so, of course, the King Tutte Scrolls
-include implemenations which use NVIDIA's version. This is not the only
-instance were non Tutte Institute code is used herein. There is also
+include implementations which use NVIDIA's version. This is not the only
+instance where non Tutte Institute code is used herein. There is also
 [torchDR](https://github.com/TorchDR/TorchDR) and the list goes on.
 As long as the code is high quality and permissively licensed (Apache,
 MIT, BSD, etc.) it is fodder for the King Tutte Scrolls. 
@@ -88,10 +95,17 @@ These King Tutte Scrolls have multiple envisioned use cases.
 
 A **solo human coder** can use the King Tutte Scrolls for
 self-study. The content (code and docs previously written by others)
-has been curated and commentary included. This repo contains the source
-for the King Tutte Pipelines Jupyter Book, which is a good place to
-start. A pre-rendered build of [the King Tutte Pipelines Jupyter Book is
-hosted on connoiter.com]().
+has been curated and commentary has been included. 
+
+This repo will include as a submodule the Jupyter notebooks of a
+related repo, [the King Tutte Datamapping Codex](https://github.com/Connoiter/king_tutte_datamapping_codex).
+Most of those notebooks are not original work from Connoiter. The have
+been modified from the originals as needed to make them work
+out-of-the-box on Google's Colab.
+
+Experimenting and modifying the code on Colab is which is a good place
+to start. A pre-rendered build of the King Tutte Datamapping Codex
+Jupyter Book is [ hosted on connoiter.com](*TBD*).
 
 ### Workshops
 
@@ -167,7 +181,7 @@ be thought of as an en silico picking of physical locks by tuning into
 broadcasts. Bonus points to the man, during the war the Allies never
 captured a Lorenz machine (which generated Fish code). In contrast,
 for Enigma they had a machine including its code books, which proved
-quite handy while reverse enginering the Enigma machine, otherwise all one'd
+quite handy while reverse engineering the Enigma machine, otherwise all one'd
 have to go on is the ciphertext to work it all out. :(
 
 Perhaps his work which is closest to this datamap technology is to be
@@ -207,8 +221,8 @@ the two organizations.
 
 Blame Connoiter for the lighthearted nature of this project. In
 contrast, the Tutte Institute is a serious Canadian government
-research institute whose technology was originally developed for use
-by Five Eyes nations for defensive cyber security purposes.
+research institute whose technology was partially developed for use
+by Five Eyes nations for cyberdefense purposes.
 
 As to the spelling of "datamap" versus the (currently) more common
 "data map," that too was a decision made by Connoiter. If "dataset"
@@ -218,11 +232,14 @@ can be a single word, why not "datamap?"
 ## Repo structure
 
 This repo is an assemblage of multiple repos and variants thereof. It
-is a corpus for use when building datamapping software. Very little of
-the work is original. The value is mostly in having a single source to
-go to when datamapping. This value is most clearly demonstrated by the
-packaging of this information into an Agent Skill
-(BTW, "Claud Skill" is the name that
+is a corpus for use when building datamapping software. Separate repos
+are included as git submodules if possible.
+
+Very little of the content herein is original work by Connoiter. The
+value is mostly in having a single source to go to when
+datamapping. This value is most clearly demonstrated by the packaging
+of this information into an Agent Skill (BTW, "Claud Skill" is the
+name that
 
 - External as-is repos as submodules
   - KTS makes no changes to the content of the repos
@@ -248,13 +265,13 @@ Colab. See [the list of Colab-ready notebooks]() in this repo.
 
 Bonus, it would be trivial to run this repo through
 [gitingest](https://github.com/coderamp-labs/gitingest) and feed the
-markdown-based output to a transformer-based LLM programming
-assistant, a.k.a. ka code daemon. 
+markdown-based output to a transformer-based LLM programming tools,
+agent or otherwise.
 
 With this repo in its context window, it should be able to crank out
 Python code to make datamaps, which are webUI(HTML&JS&c.) widgets that
 run live inside notebooks (Jupyter and Marimo) or can be exported as
-    stand-along static file HTML web-apps that can be run in browsers
+stand-along static file HTML web-apps that can be run in browsers
 later.
 
 For convenience, a pre-built run of this repo through gitingest is
@@ -268,12 +285,14 @@ site's llms.txt file.
 
 ## Contributing
 
-PRs welcome! We use the GihHub Flow for coordinating.
+PRs welcome! We use [the GihHub Flow](https://docs.github.com/en/get-started/using-github/github-flow) for coordinating. Fork and PR. Follow [GitHubs instructions](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-open-source#cloning-a-fork-of-a-project).
+
+
 
 Finally, the academic types such as the researchers at the Tutte
 Institute live and die by citations so giving thanks via a citation
 is the best bang for buck way of contributing. See specific repos for 
 how to cite. For example:
 - [UMAP citing](https://github.com/lmcinnes/umap?tab=readme-ov-file#citation)
-for how to cite.
 - [HDBSCAN citing](https://github.com/scikit-learn-contrib/hdbscan?tab=readme-ov-file#citing)
+
