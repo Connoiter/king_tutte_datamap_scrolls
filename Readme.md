@@ -9,20 +9,26 @@ from permissively licensed open source components developed primarily by the
 (TIMC)](https://www.cse-cst.gc.ca/en/mission/research-cse/tutte-institute-mathematics-computing)
 out of Canada, hence the name "King Tutte."
 
-<a href="https://en.wikipedia.org/wiki/Mask_of_Tutankhamun">
-<img src="./images/king_tutte_funerary_mask.png" width="100%" />
-</a>
+
+<div align="center">
+  <a href="https://en.wikipedia.org/wiki/Mask_of_Tutankhamun">
+    <img src="./images/king_tutte_funerary_mask.png" width="100%" />
+  </a>
+  <p>Funerary mask of Bill Tutte</p>
+</div>
+
 
 ## Introduction
 
 Large collections of neural embedding vectors are proliferating
 rapidly. For example, at its core every vector database and RAG
-knowledge base consists of such a collection. Datamaps make for great
-web-tech based, interactive visualizations of embedding vector
-collections, enabling an overview of a collection and exploratory
-data analysis.
+knowledge base consists of such a collection. Datamaps are
+visualizations of embedding vector collections implemented
+via modern web technologies such as HTML, WebGL/WebGPU, JavaScript,
+CSS, etc. They provide a graphical overview of a collection and enable
+interactive exploratory data analysis.
 
-These "scrolls" (read: code, documentation, recorded talks, and
+These "scrolls" (read: code, documentation, recorded tech talks, and
 associated commentary) are an agglomeration of permissively licensed
 repos and web content related to building datamaps, the bulk of which
 originates out of the **Tutte** Institute of Canada -- hence the nod
@@ -30,9 +36,11 @@ to them in this repo's name.
 
 The **goal** of this King Tutte Scrolls repo is to create **a one-stop
 shop for datamapping** enabling any developer (human and/or
-[agent](https://simonwillison.net/2025/Sep/18/agents/)) looking to
-bang out datamaps of any "AI-ready data," that is, data with embedding
-vectors. If necessary, this includes creating the embedding vectors.
+[agentic](https://simonwillison.net/2025/Sep/18/agents/)) looking to
+produce datamaps of any "AI-ready data," that is, data with embedding
+vectors. If necessary, the production process can include creating the
+embedding vectors themselves from input data not originally
+vectorized.
 
 Note that this repo can be built into an **Agent Skill** (as 
 [defined by Anthropic](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills))
@@ -174,15 +182,18 @@ encrypted comms at Bletchley Park. Later he became a Canadian citizen.
 Notably, Tutte worked to crack the German High Command communications
 code known by the Allies as “Fish,” an even tougher nut to crack than
 the more well-known Enigma machine. Feel free to nerd out on tools he
-developed such as the Δ and double-delta methods, wherein the cracker
-digitally simulated mechanical wheel-based crypto comm boxes. It can
-be thought of as an en silico picking of physical locks by tuning into
-(via XOR filters on bit streams) their encrypted digital
-broadcasts. Bonus points to the man, during the war the Allies never
-captured a Lorenz machine (which generated Fish code). In contrast,
-for Enigma they had a machine including its code books, which proved
-quite handy while reverse engineering the Enigma machine, otherwise all one'd
-have to go on is the ciphertext to work it all out. :(
+developed such as the Δ and double-delta methods, wherein the hacker
+digitally simulated mechanical wheel-based crypto communiction boxes
+such as the Enigma machine. It can be thought of as an en silico
+picking of physical locks by tuning into (via XOR filters on bit
+streams) their encrypted digital broadcasts. 
+
+The reason why this work was more impressive than cracking Enigma is
+that during the war the Allies never captured a Lorenz machine (which
+generated Fish code). In contrast, for Enigma they did acquire a
+machine including its code books, which proved quite handy while
+reverse engineering the Enigma machine, otherwise all one'd have to go
+on is intercepted ciphertext broadcast to work it all out. :(
 
 Perhaps his work which is closest to this datamap technology is to be
 found in his 1963 paper, [How to Draw a
@@ -200,16 +211,14 @@ ruled around 1332 to 1323 BC. King Tut has been immortalized in song,
 as [can be seen on
 YouTube](https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0).
 
-
-
-
 <div align="center">
-<a href="https://cdn.aarp.net/content/dam/aarp/entertainment/Styles-and-Trends/2017/05/1140-steve-martin-king-tut.imgcache.rev43bf12cdafa4dad1053724bc5ed42e42.web.1140.655.jpg">
-<img src="./images/king_tutte_at_the_mic.png" width="50%" />
-</a>
-<br/>
-<a href="https://www.aarp.org/entertainment/movies-for-grownups/steve-martin-career-photo/#slide5">Via AARP</a>
+  <a href="https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0">
+    <img src="./images/king_tut_on_snl.jpg" width="50%" />
+  </a>
+  <p>King Tut on SNL, 1978</p>
 </div>
+
+
 
 
 ### King Tutte
@@ -225,8 +234,8 @@ research institute whose technology was partially developed for use
 by Five Eyes nations for cyberdefense purposes.
 
 As to the spelling of "datamap" versus the (currently) more common
-"data map," that too was a decision made by Connoiter. If "dataset"
-can be a single word, why not "datamap?"
+"data map," that too was a decision made by Connoiter. If "dataset" and
+"datapoint" can be a single words, why not "datamap?"
 
 
 ## Repo structure
@@ -295,4 +304,13 @@ is the best bang for buck way of contributing. See specific repos for
 how to cite. For example:
 - [UMAP citing](https://github.com/lmcinnes/umap?tab=readme-ov-file#citation)
 - [HDBSCAN citing](https://github.com/scikit-learn-contrib/hdbscan?tab=readme-ov-file#citing)
+
+
+<div align="center">
+<a href="https://cdn.aarp.net/content/dam/aarp/entertainment/Styles-and-Trends/2017/05/1140-steve-martin-king-tut.imgcache.rev43bf12cdafa4dad1053724bc5ed42e42.web.1140.655.jpg">
+<img src="./images/king_tutte_at_the_mic.png" width="50%" />
+</a>
+<br/>
+<a href="https://www.rhino.com/article/live-from-new-york-its-king-tut">Via Rhino</a>
+</div>
 
