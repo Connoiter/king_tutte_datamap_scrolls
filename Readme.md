@@ -237,6 +237,14 @@ As to the spelling of "datamap" versus the (currently) more common
 "data map," that too was a decision made by Connoiter. If "dataset" and
 "datapoint" can be a single words, why not "datamap?"
 
+<div align="center">
+<a href="https://cdn.aarp.net/content/dam/aarp/entertainment/Styles-and-Trends/2017/05/1140-steve-martin-king-tut.imgcache.rev43bf12cdafa4dad1053724bc5ed42e42.web.1140.655.jpg">
+<img src="./images/king_tutte_at_the_mic.png" width="50%" />
+</a>
+<br/>
+<a href="https://www.rhino.com/article/live-from-new-york-its-king-tut">Via Rhino</a>
+</div>
+
 
 ## Repo structure
 
@@ -306,11 +314,4 @@ how to cite. For example:
 - [HDBSCAN citing](https://github.com/scikit-learn-contrib/hdbscan?tab=readme-ov-file#citing)
 
 
-<div align="center">
-<a href="https://cdn.aarp.net/content/dam/aarp/entertainment/Styles-and-Trends/2017/05/1140-steve-martin-king-tut.imgcache.rev43bf12cdafa4dad1053724bc5ed42e42.web.1140.655.jpg">
-<img src="./images/king_tutte_at_the_mic.png" width="50%" />
-</a>
-<br/>
-<a href="https://www.rhino.com/article/live-from-new-york-its-king-tut">Via Rhino</a>
-</div>
 
