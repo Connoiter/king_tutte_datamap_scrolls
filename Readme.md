@@ -1,4 +1,30 @@
-# King Tutte Scrolls
+# King Tutte Datamap Scrolls
+
+
+The live demo datamap will actually use data from Ai2's Sementic Scholar library. Seeing as the meetup is at Ai2, that would certainly seem relevant to any Ai2 folks in the audience.
+
+More broadly the big take-away is that datamaps are a new visualization technique that every AI practitioner should have in their toolbox, and these datamaps are all based on permissively licensed open source.
+
+The announcment says "If your build... explores what current frameworks just barely support." Datamaps are a match. The best-of-breed FOSS datamap framework can currenly handle millions of datapoints, even some tens of millions. But the demo datamap is only a subset of Semantic Scholar's data. A full datamap would require handling ~200 million datapoints, while the biggest datamap yet is on the order of 60 million datapoints. So, a full Semantic Scholar datamap is right on the edge of what is just now becoming possible.
+
+Quoting the announcement again, "This is about enabling a fellow tinkerer." Within a year or so I believe datamaps will be everywhere. Datamaps will soon be a tool developers reach for whenever they need to take a first look at their data. Datamaps are extremely useful diagnostic instruments for all manner of AI dev tinkering. All via open source -- that's enabling.
+
+Quoting again, "AI Tinkerers and the Allen Institute for AI are teaming up to surface the projects sitting right at the boundary between research and production."  Datamaps are crossing that boundary as we speak. The adoption of datamaps has already affected researchers in fields as diverse as NLP all the way to single cell genomics. Now datamaps are being commercialized, with at least two start-ups providing datamapping as a service. Datamaps will be seen all over the AI landscape within a year, from researchers curating data to end-users controlling RAG system in chatbot interfaces.
+
+
+
+
+
+[I was talking to Joe at the end of the recent gathering at Fenwick & West on the 29th, "AI Trust & Security in AI: Demo Night." He said I should submit a datamap demo proposal. So, here it is.]
+
+Datamaps are a new visualization technique custom designed for vector databases, RAG systems, or more generally any collection of embedding vectors, that is any "AI-ready data." The best-of-breed datamap tooling are permissively licensed open source.
+
+This lightning talk explains what datamaps are by providing a live interactive demo of Ai2 Semantic Scholar's curated library of scientific papers. The demo shows to how to DIY code up datamaps via open source.  The (pre-cooked) example datamap would be a single static HTML page which each attendee can simultaneous load onto their phone and interact with. Here is the datamap they would experience:
+
+https://connoiter.com/datamap/55948af4-903c-41cb-997e-a1dfda45eb5f/
+
+
+
 
 This repo is a how-to manual for building "King Tutte pipelines,"
 which generate
@@ -207,10 +233,9 @@ reverse engineering the Enigma machine, otherwise all one'd have to go
 on is intercepted ciphertext broadcast to work it all out. :(
 
 <div align="center">
-  <a href="https://www.bbc.com/news/uk-36401663">
-    <img src="./images/lorenz_machine.jpg" align="left" width="50%" />
+  <a href="https://theconversation.com/remembering-bill-tutte-another-brilliant-codebreaker-from-world-war-ii-77556">
+    <img src="./images/lorenz_machine.jpg" alt="Lorenz machine" align="left" width="50%" />
   </a>
-  <p>Lorenz cypher coder wheels</p>
 </div>
 
 Perhaps his work which is closest to this datamap technology is to be
@@ -232,9 +257,8 @@ YouTube](https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0).
 
 <div align="center">
   <a href="https://www.youtube.com/embed/k-fc3UrLRLQ?autoplay=1&mute=1&loop=0">
-    <img src="./images/king_tut_on_snl.jpg" width="50%" />
+    <img src="./images/king_tut_on_snl.jpg" alt="King Tut on SNL, 1978" width="50%" />
   </a>
-  <p>King Tut on SNL, 1978</p>
 </div>
 
 

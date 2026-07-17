@@ -20,3 +20,7 @@ long as the topic is datamapping.
 The goal is to provide backgrounders and how-to for self-study and
 for use by agents using this repo built as an Agent Skill. As such,
 the full transcripts are included. 
+
+
+- [BioTuring Webinar: A Practical Guide to UMAP by its author John Healy](https://www.youtube.com/watch?v=YevCnRd61f8&t=49s&ab_channel=BioTuringTeam)
+  - 7,712 views  Nov 23, 2021
