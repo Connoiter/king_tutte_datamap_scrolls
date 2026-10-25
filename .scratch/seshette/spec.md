@@ -150,7 +150,7 @@ generated committed alongside it.
 **Scope limits for version 1** (matching Vectron v1): 2D maps only, one embedding per point, text only.
 
 **Environment**
-- Python runs locally through `uv`. Ollama is the one extra install. EmbeddingGemma 2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
+- Python runs locally through `uv`. This repo has one `uv` project at its root, with pinned versions, used by the run checker, the build experiments and the worked example; the skill's instructions tell a caller in another repo how to set up its own. Ollama is the one extra install. EmbeddingGemma 2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
 
 **Repo additions**
 - EVōC, DataMapPlot and Toponymy are added as upstream submodules next to UMAP and HDBSCAN, unedited, so agents learn from their example code. Licenses confirmed: EVōC BSD-2-Clause, DataMapPlot MIT, Toponymy MIT.
@@ -178,6 +178,7 @@ generated committed alongside it.
 
   The same checks apply when a caller starts mid-pipeline; only the tables after the starting scribe are checked as outputs.
 - **Supporting seam: the worked example in a fresh session.** A new Claude Code session in this repo runs `/datamap` on the 500-row sample with no other instructions. It passes when the primary-seam checks pass within about 15 minutes on the target MacBook, and a human opening the map judges that the cluster topics make sense. The human judgment is part of the test because label quality cannot be asserted automatically.
+- The primary-seam checks are run by a checker script in the repo, outside the skill folder. It is test code, not part of the skill, so it does not break the version 1 rule that the skill ships no Python.
 - Prior art: the repo has no tests yet. The upstream submodules have their own test suites, but those test the libraries, not Seshette.
 
 ## Out of Scope
