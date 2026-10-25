@@ -2,7 +2,7 @@
 
 **Type:** prototype
 
-**What to build:** Answer the spec's third untested assumption: does Toponymy's `OllamaNamer`, explicitly set to Gemma 4 (never its Llama default), reliably get the structured answers Toponymy expects? Also confirm the hand-off the Labeler will use: Toponymy is given cluster layers and a cluster tree that already exist, and does not cluster again. Use a small sample clustered with `ToponymyClusterer`, and the Embedder's model as Toponymy's text embedding model.
+**What to build:** Answer the spec's third untested assumption: does Toponymy's `OllamaNamer`, explicitly set to Gemma 4 as `gemma4:e4b-it-qat` (never its Llama default; use `gemma4:e2b-it-qat` instead if experiment 03 recommends it), reliably get the structured answers Toponymy expects? Also confirm the hand-off the Labeler will use: Toponymy is given cluster layers and a cluster tree that already exist, and does not cluster again. Use a small sample clustered with `ToponymyClusterer`, and the Embedder's model as Toponymy's text embedding model.
 
 **Blocked by:** 03 (Experiment: both local models on 16 GB)
 

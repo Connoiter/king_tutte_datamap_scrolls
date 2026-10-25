@@ -121,7 +121,7 @@ generated committed alongside it.
 - Every random step takes a fixed `random_state`: UMAP in the Reducer, and EVōC when it is used. The worked example then comes out the same on every run.
 - On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer instructions must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
 - The Embedder formats each document the way EmbeddingGemma 2 expects for documents, combining the title and text, and uses the plain document format when there is no title.
-- The Labeler uses a local model, Gemma 4 (the `e4b` size; `e2b` if memory is tight), served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
+- The Labeler uses a local model, Gemma 4 at the `e4b` size, as the exact Ollama tag `gemma4:e4b-it-qat` (6.1 GB, quantization-aware trained; the plain `gemma4:e4b` tag may pull a larger build), with `gemma4:e2b-it-qat` (4.3 GB) as the fallback if memory is tight, served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
 - Point titles are normally supplied by the caller in `documents.title`. The Labeler fills `points.title` for every point: it copies the caller's title, and for a point without one it uses the first 10 or so words of the text, cut at a word boundary. No model writes titles.
 - The Labeler gives Toponymy the Clusterer's results rather than letting Toponymy cluster again. Toponymy skips its own clustering when handed a clusterer that already has `cluster_layers_` and `cluster_tree_` (confirmed in its source), so the Labeler builds the per-layer cluster arrays from the cluster tree and wraps them that way. Toponymy also needs a text embedding model while it labels; the Labeler uses the Embedder's model.
 - Toponymy labels clusters only, never individual points. Noise points (cluster `-1`) are never labeled and are shown grey. DataMapPlot recognises noise by a label string, not by `-1`: when the Renderer builds the per-layer label arrays, it gives every point that is noise at that layer DataMapPlot's `noise_label` ("Unlabelled" by default), so noise draws grey instead of appearing as a cluster named "-1".
@@ -150,7 +150,7 @@ generated committed alongside it.
 **Scope limits for version 1** (matching Vectron v1): 2D maps only, one embedding per point, text only.
 
 **Environment**
-- Python runs locally through `uv`. This repo has one `uv` project at its root, with pinned versions, used by the run checker, the build experiments and the worked example; the skill's instructions tell a caller in another repo how to set up its own. Ollama is the one extra install. EmbeddingGemma 2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
+- Python runs locally through `uv`. This repo has one `uv` project at its root, with pinned versions, used by the run checker, the build experiments and the worked example; the skill's instructions tell a caller in another repo how to set up its own. Ollama is the one extra install. EmbeddingGemma 2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama as `gemma4:e4b-it-qat`. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
 
 **Repo additions**
 - EVōC, DataMapPlot and Toponymy are added as upstream submodules next to UMAP and HDBSCAN, unedited, so agents learn from their example code. Licenses confirmed: EVōC BSD-2-Clause, DataMapPlot MIT, Toponymy MIT.
@@ -203,7 +203,7 @@ generated committed alongside it.
 
 - **Untested assumptions, to check first when building:**
   - That DuckDB can derive column types from `schema.sql` cleanly enough for pyiceberg to create the tables, including the vector column.
-  - That Gemma 4 `e4b` and the embedding model fit comfortably in memory together on a 16 GB MacBook.
+  - That Gemma 4 (`gemma4:e4b-it-qat`) and the embedding model fit comfortably in memory together on a 16 GB MacBook.
   - That Toponymy's Ollama namer works with Gemma 4 and reliably gets the structured answers Toponymy expects.
 - Toponymy's Ollama namer defaults to a Llama model, whose license is not permissive; Seshette must always name Gemma 4 explicitly.
 - The schema intentionally starts loose ("first pass, don't sweat the details"); expect it to change after the first real run.
