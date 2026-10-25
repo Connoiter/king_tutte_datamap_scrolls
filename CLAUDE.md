@@ -35,8 +35,23 @@ https://connoiter.com/blog/
   metadata into `docs/talks/`, driven by `docs/talks/by_tutte/talks.json`.
 - `library/` — notes on specific techniques and papers.
 - `images/` — assets used by the README.
-- `repos/` — upstream git submodules (`umap`, `hdbscan`). Don't edit these;
-  they track upstream.
+- `repos/` — upstream git submodules, kept as reference code for how the
+  tools are meant to be used. Don't edit these; they track upstream.
+  - Pipeline stages: `vectorizers` (embed), `umap` + `pynndescent` (reduce),
+    `hdbscan` / `fast_hdbscan` / `fast_plscan` / `evoc` (cluster), `toponymy` (name
+    clusters), `datamapplot` + `glasbey` (render, colour palettes).
+  - Examples and adjacent tools: `tutorials`, `thisnotthat` (interactive
+    labeling), `temporal-mapper` (time-evolving maps).
+  - Everything after `umap`/`hdbscan` is a shallow clone (`datamapplot` alone
+    is ~900 MB).
+  - A plain clone leaves `repos/*` empty. If they are, run
+    `git submodule update --init` (it honours the shallow setting) before
+    looking for reference code; don't conclude the code is missing.
+  - Exception: in a git worktree (for example an implementer subagent's),
+    never init the submodules; each init would copy about 2 GB. They are
+    read-only reference, so read them from the main checkout instead: it is
+    the parent folder of `git rev-parse --path-format=absolute --git-common-dir`,
+    and the code is in its `repos/`.
 
 ## Conventions
 
