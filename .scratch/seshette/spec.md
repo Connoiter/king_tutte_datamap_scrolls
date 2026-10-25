@@ -85,7 +85,7 @@ generated committed alongside it.
 38. As a tester, I want a fixed random sample rather than the first rows, so that the test data is representative and identical on every run.
 39. As a tester, I want a fresh agent session to succeed with `/datamap` alone, so that I know the skill works without this project's history.
 40. As a future contributor, I want the scribes' contracts described in terms of database tables, so that I can reimplement any scribe in another language.
-41. As a future contributor, I want stages whose default tool can be swapped (for example HDBSCAN for EVōC), so that the toolkit can grow without restructuring.
+41. As a future contributor, I want stages whose default tool can be swapped (for example EVōC for layered HDBSCAN), so that the toolkit can grow without restructuring.
 
 ## Implementation Decisions
 
@@ -102,12 +102,16 @@ generated committed alongside it.
 |---|---|---|---|---|
 | Embedder | Embed | sentence-transformers with EmbeddingGemma 2 (text encoder, 768 dimensions) | all-MiniLM-L6-v2 as a lightweight fallback; TIMC Vectorizers for special cases | `embeddings` |
 | Reducer | Reduce | UMAP to 2D | | `points.x`, `points.y` |
-| Clusterer | Cluster | EVōC | UMAP followed by HDBSCAN | `points.cluster`; the `clusters` table with every cluster layer and the cluster tree |
+| Clusterer | Cluster | Layered HDBSCAN on the Reducer's 2D map, through Toponymy's `ToponymyClusterer` | EVōC | `points.cluster`; the `clusters` table with every cluster layer and the cluster tree |
 | Labeler | Label | Toponymy for cluster labels; the same local model for missing titles | | `clusters.label`; `points.title` |
 | Renderer | Render | DataMapPlot | | the standalone datamap HTML |
 
-- EVōC produces cluster layers and a cluster tree but no 2D coordinates (confirmed in its source and by its author), so the Reducer always runs, even on the EVōC path.
-- EVōC is the default Clusterer because it needs little tuning; UMAP + HDBSCAN is the documented alternative. On that path the Clusterer runs its own UMAP reduction to about 10 dimensions and clusters that, keeping it in memory only; it does not cluster the Reducer's 2D map, and nothing about it is stored.
+- The default Clusterer is the canonical, long-established path: UMAP followed by HDBSCAN. It has far more examples and experience behind it than EVōC, and the Tutte Institute's own examples supply known-good settings for the worked example's data. Once the pipeline works end to end, EVōC can be tried on harder data.
+- On the default path the Clusterer clusters the Reducer's 2D map (`points.x`, `points.y`), as Toponymy's and DataMapPlot's examples do, so the clusters match what the map shows. It uses Toponymy's `ToponymyClusterer`, a layered HDBSCAN built on `fast_hdbscan` (BSD-2-Clause, a Toponymy dependency), which produces fine-to-coarse cluster layers and the cluster tree. Plain `hdbscan` gives only one flat layer, so it is not used directly.
+- The Reducer always runs before the Clusterer. On the EVōC path it still runs, because EVōC produces cluster layers and a cluster tree but no 2D coordinates (confirmed in its source and by its author).
+- Cluster layers are numbered from 0, the finest, upward to the coarsest, matching both `ToponymyClusterer` and EVōC. The number of layers varies by dataset and by random seed.
+- Every random step takes a fixed `random_state`: UMAP in the Reducer, and EVōC when it is used. The worked example then comes out the same on every run.
+- On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer instructions must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
 - The Embedder formats each document the way EmbeddingGemma 2 expects for documents, combining the title and text, and uses the plain document format when there is no title.
 - The Labeler uses a local model, Gemma 4 (the `e4b` size; `e2b` if memory is tight), served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
 - Point titles are normally supplied by the caller in `documents.title`. The Labeler fills `points.title` for every point: it copies the caller's title, and for points without one it asks the same local model for a short title, of similar length to Toponymy's cluster labels, up to a cap of 1,000 untitled points; above the cap, the title falls back to the first line of the text.
@@ -124,7 +128,7 @@ generated committed alongside it.
   - `points`: one row per point with `id`, `x`, `y`, `cluster` and `title`. Small; scribes fill its columns in pipeline order.
   - `clusters`: one row per cluster, with a `cluster` id unique across all cluster layers, its `layer`, its `parent` cluster in the next coarser layer, and its `label`. Together the rows form the cluster tree.
 - **The cluster tree is stored once, as parent pointers.** Cluster layers nest strictly, because the clustering is hierarchical. `points.cluster` holds the finest cluster a point belongs to; its ancestors come from the tree, and any finer layer counts as noise for that point. A point that is noise at every layer gets `-1`.
-- The schema cannot hold one column per cluster layer, because EVōC decides how many layers a dataset gets. Libraries that want a flat per-layer shape get it built in memory, never stored:
+- The schema cannot hold one column per cluster layer, because the Clusterer decides how many layers a dataset gets. Libraries that want a flat per-layer shape get it built in memory, never stored:
   - The Renderer turns the tree into the one label array per layer that DataMapPlot expects, then calls DataMapPlot. DataMapPlot is not modified.
   - The Labeler builds the per-layer cluster arrays Toponymy expects in the same way.
 - All joins are by `id` (or by cluster and layer), never by row order.
@@ -156,6 +160,7 @@ generated committed alongside it.
   - every `id` in `documents` has exactly one row in `embeddings` and exactly one row in `points`, with `x`, `y`, `cluster` and `title` all present;
   - every `cluster` value is either a real cluster or `-1`;
   - every non-noise cluster at every cluster layer has a label;
+  - no check assumes a particular number of cluster layers;
   - the datamap HTML exists and loads in a headless browser with no script errors.
 
   The same checks apply when a caller starts mid-pipeline; only the tables after the starting scribe are checked as outputs.

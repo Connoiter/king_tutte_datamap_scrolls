@@ -45,7 +45,7 @@ scribe whose inputs already exist.
 |---|---|---|---|
 | Embedder | Embed | sentence-transformers with EmbeddingGemma 2 | all-MiniLM-L6-v2; TIMC Vectorizers for special cases |
 | Reducer | Reduce | UMAP, to 2D map coordinates | |
-| Clusterer | Cluster | EVōC | UMAP + HDBSCAN |
+| Clusterer | Cluster | Layered HDBSCAN on the 2D map (Toponymy's `ToponymyClusterer`) | EVōC |
 | Labeler | Label | Toponymy with Gemma 4 via Ollama | |
 | Renderer | Render | DataMapPlot | |
 
@@ -102,8 +102,9 @@ only through their clusters.
 
 ## Cluster layer
 
-One resolution of clustering, from fine to coarse. EVōC produces several, and
-the datamap shows them as zoom levels.
+One resolution of clustering. Layers are numbered from 0, the finest, upward
+to the coarsest. The Clusterer produces several (how many depends on the
+data), and the datamap shows them as zoom levels.
 
 ## Noise point
 
