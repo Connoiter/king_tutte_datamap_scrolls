@@ -36,6 +36,7 @@
 	path = repos/temporal-mapper
 	url = https://github.com/TutteInstitute/temporal-mapper
 	shallow = true
+	ignore = dirty
 [submodule "repos/pynndescent"]
 	path = repos/pynndescent
 	url = https://github.com/lmcinnes/pynndescent
@@ -47,3 +48,4 @@
 [submodule "repos/fast_plscan"]
 	path = repos/fast_plscan
 	url = https://github.com/JelmerBot/fast_plscan
+	shallow = true
