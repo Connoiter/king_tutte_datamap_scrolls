@@ -142,3 +142,7 @@ Reproduce: create a uv project identical to the root one but with
 --dtype bfloat16 --batch-size 4 --out results.json` (add
 `--model gemma4:e2b-it-qat` for the fallback) and
 `python experiments/03-models-in-memory/summarize.py results.json`.
+
+## Comments
+
+- 2026-10-25, decision (John Tigue): keep the transformers 4.57 pins (Toponymy 0.5.4) and make all-MiniLM-L6-v2 the default embedder for now, instead of overriding transformers to 5 for EmbeddingGemma 2 (option C above). The spec, ticket 06, ticket 12, `docs/terminology.md` and `docs/setup.md` are updated to match. Consequence: user story 14 (whole long documents) is deferred, since MiniLM reads 256 tokens.

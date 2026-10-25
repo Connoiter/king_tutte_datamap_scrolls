@@ -43,7 +43,7 @@ scribe whose inputs already exist.
 
 | Scribe | Stage | Default tool | Alternatives |
 |---|---|---|---|
-| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 | all-MiniLM-L6-v2 |
+| Embedder | Embed | sentence-transformers with all-MiniLM-L6-v2 | EmbeddingGemma 2 |
 | Reducer | Reduce | UMAP, to 2D map coordinates | openTSNE; PaCMAP |
 | Clusterer | Cluster | Layered HDBSCAN on the 2D map (Toponymy's `ToponymyClusterer`) | EVōC |
 | Labeler | Label | Toponymy with Gemma 4 via Ollama | |

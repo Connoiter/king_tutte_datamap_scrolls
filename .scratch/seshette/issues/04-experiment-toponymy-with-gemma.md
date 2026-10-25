@@ -159,3 +159,7 @@ human's.
    EmbeddingGemma prompt prefix) and compares them with document vectors made
    with the document prefix. It worked here; whether a query prefix improves
    keyphrases was not tested.
+
+## Comments
+
+- 2026-10-25, after the decision to make all-MiniLM-L6-v2 the default embedder (see ticket 03's comments): re-ran `run_experiment.py --embedder minilm --batch-size 32 --n 500` in the root environment, unmodified (transformers 4.57.6, sentence-transformers 5.7.0, toponymy 0.5.4), with `think: False` and `num_ctx: 16384`. Result: 3 cluster layers (27, 11 and 6 clusters), every one of the 44 clusters labeled by `gemma4:e4b-it-qat`, 0 parse failures in 38 calls, no re-clustering (spies counted 0 calls; Toponymy used the precomputed layers). Embedding 500 abstracts took 4 s; `Toponymy.fit` took 450 s, about 10 s per cluster, almost all of it in the LLM. Noise share was 37–40% at each layer. Example labels: "Deep Learning Applications in Audio Signal Processing and Speech Tasks", "Theoretical Analysis of Thompson Sampling and Multi-Armed Bandit Regret Bounds".

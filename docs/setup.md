@@ -134,6 +134,10 @@ seconds.
 
 ## Models downloaded on first use
 
-The embedding model (EmbeddingGemma 2, Apache-2.0) is not part of either
-install. sentence-transformers downloads it from Hugging Face the first time
-the Embedder runs; it is not gated, so no account is needed.
+The embedding model (all-MiniLM-L6-v2, Apache-2.0, about 90 MB) is not part
+of either install. sentence-transformers downloads it from Hugging Face the
+first time the Embedder runs; it is not gated, so no account is needed.
+
+EmbeddingGemma 2, the planned default, does not load in this environment: it
+needs transformers 5, and Toponymy 0.5.4 requires transformers below 5. See
+the spec's Embedder decisions.

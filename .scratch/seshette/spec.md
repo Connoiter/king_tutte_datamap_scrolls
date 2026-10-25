@@ -58,7 +58,7 @@ generated committed alongside it.
 11. As a user, I want points that belong to no cluster to stay on the map, drawn grey, so that outliers are visible rather than silently dropped.
 12. As a user whose documents have no titles, I want each point to show the first few words of its text instead, so that hovering and search still work.
 13. As a user with a very large collection of untitled documents, I want that fallback to cost no model calls, so that a run does not take hours.
-14. As a user, I want long documents embedded in full rather than cut off after a few hundred tokens, so that the map reflects whole documents.
+14. As a user, I want long documents embedded in full rather than cut off after a few hundred tokens, so that the map reflects whole documents. (Deferred: the version 1 default embedder reads only the first 256 tokens; see the Embedder decisions.)
 15. As a caller that already has embedding vectors, I want to supply them and skip the Embedder, so that I don't pay to embed twice.
 16. As a caller, I want to start the pipeline at any scribe whose inputs already exist, so that I can reuse earlier results or swap in my own stage.
 17. As a caller, I want to supply each point's id, text, title and, optionally, a url, so that the map uses my own names for my documents and links back to them.
@@ -108,7 +108,7 @@ generated committed alongside it.
 
 | Scribe | Stage | Default tool | Documented alternatives | Writes |
 |---|---|---|---|---|
-| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 (text encoder, 768 dimensions) | all-MiniLM-L6-v2 as a lightweight fallback | `embeddings` |
+| Embedder | Embed | sentence-transformers with all-MiniLM-L6-v2 (384 dimensions) | EmbeddingGemma 2 (768 dimensions), once the environment allows transformers 5 | `embeddings` |
 | Reducer | Reduce | UMAP to 2D | openTSNE; PaCMAP | `points.x`, `points.y` |
 | Clusterer | Cluster | Layered HDBSCAN on the Reducer's 2D map, through Toponymy's `ToponymyClusterer` | EVōC | `points.cluster`; the `clusters` table with every cluster layer and the cluster tree |
 | Labeler | Label | Toponymy for cluster labels | | `clusters.label`; `points.title` |
@@ -120,7 +120,10 @@ generated committed alongside it.
 - Cluster layers are numbered from 0, the finest, upward to the coarsest, matching both `ToponymyClusterer` and EVōC. The number of layers varies by dataset and by random seed.
 - Every random step takes a fixed `random_state`: UMAP in the Reducer, and EVōC when it is used. The worked example then comes out the same on every run.
 - On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer instructions must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
-- The Embedder formats each document the way EmbeddingGemma 2 expects for documents, combining the title and text, and uses the plain document format when there is no title.
+- The default Embedder is all-MiniLM-L6-v2, for now. EmbeddingGemma 2 was the first choice, but it needs transformers 5, and Toponymy 0.5.4 (the version curated in `repos/toponymy`) requires transformers below 5. A human decided to keep the transformers 4.57 pins rather than override Toponymy's cap (see the comment on ticket 03). all-MiniLM-L6-v2 is Toponymy's own usual example embedder, is small (well under 1 GB in memory) and fast, which also eases the 16 GB memory pressure ticket 03 measured.
+- all-MiniLM-L6-v2 reads at most 256 tokens of each document and silently ignores the rest, so user story 14 (long documents embedded in full) is deferred. arXiv abstracts mostly fit. The Embedder instructions must say so, so a caller with long documents knows.
+- The Embedder embeds each document as its title and text together (the title, then the text), or the text alone when there is no title. all-MiniLM-L6-v2 takes no task prefix.
+- EmbeddingGemma 2 becomes the default again once Toponymy allows transformers 5. Ticket 04 found that Toponymy 0.5.4's labeling path already runs under transformers 5.20.2 with a dependency override, so this is a pin change, not a code change. It then formats documents the way its model card expects, with the plain document format when there is no title.
 - The Labeler uses a local model, Gemma 4 at the `e4b` size, as the exact Ollama tag `gemma4:e4b-it-qat` (6.1 GB, quantization-aware trained; the plain `gemma4:e4b` tag may pull a larger build), with `gemma4:e2b-it-qat` (4.3 GB) as the fallback if memory is tight, served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
 - Point titles are normally supplied by the caller in `documents.title`. The Labeler fills `points.title` for every point: it copies the caller's title, and for a point without one it uses the first 10 or so words of the text, cut at a word boundary. No model writes titles.
 - The Labeler gives Toponymy the Clusterer's results rather than letting Toponymy cluster again. Toponymy skips its own clustering when handed a clusterer that already has `cluster_layers_` and `cluster_tree_` (confirmed in its source), so the Labeler builds the per-layer cluster arrays from the cluster tree and wraps them that way. Toponymy also needs a text embedding model while it labels; the Labeler uses the Embedder's model.
@@ -150,12 +153,12 @@ generated committed alongside it.
 **Scope limits for version 1** (matching Vectron v1): 2D maps only, one embedding per point, text only.
 
 **Environment**
-- Python runs locally through `uv`. This repo has one `uv` project at its root, with pinned versions, used by the run checker, the build experiments and the worked example; the skill's instructions tell a caller in another repo how to set up its own. Ollama is the one extra install. EmbeddingGemma 2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama as `gemma4:e4b-it-qat`. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
+- Python runs locally through `uv`. This repo has one `uv` project at its root, with pinned versions, used by the run checker, the build experiments and the worked example; the skill's instructions tell a caller in another repo how to set up its own. Ollama is the one extra install. all-MiniLM-L6-v2 downloads from Hugging Face without an account (the model is not gated); Gemma 4 is pulled through Ollama as `gemma4:e4b-it-qat`. The hardware target is a modern Apple Silicon MacBook with 16 GB of memory or more.
 
 **Repo additions**
 - EVōC, DataMapPlot and Toponymy are added as upstream submodules next to UMAP and HDBSCAN, unedited, so agents learn from their example code. Licenses confirmed: EVōC BSD-2-Clause, DataMapPlot MIT, Toponymy MIT.
 - Reducer alternatives, recommended by Leland McInnes in his 2025 TMLS talk, are documented but not added as submodules. Licenses confirmed: openTSNE BSD-3-Clause, PaCMAP Apache-2.0.
-- Default model licenses confirmed: Gemma 4 and EmbeddingGemma 2 are both Apache 2.0. (Earlier Gemma releases, including the original EmbeddingGemma, use the non-permissive Gemma Terms of Use; Seshette must name the version 2 and version 4 models explicitly.)
+- Default model licenses confirmed: Gemma 4 and all-MiniLM-L6-v2 are both Apache 2.0, as is EmbeddingGemma 2, the Embedder's planned default. (Earlier Gemma releases, including the original EmbeddingGemma, use the non-permissive Gemma Terms of Use; Seshette must name the version 2 and version 4 models explicitly.)
 - The README gains a section on using Seshette from another repo: clone the Scrolls and symbolically link the skill folder into that repo's skills folder, then pull to update. No plugin packaging yet.
 
 **Worked example**
