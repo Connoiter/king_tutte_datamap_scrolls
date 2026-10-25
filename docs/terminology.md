@@ -33,7 +33,7 @@ format. _Avoid:_ "Seshat", "Sachet".
 Whoever invokes Seshette: a person typing `/datamap`, or a source-specific
 skill in another repo that prepares the input and uses Seshette as a
 component. The caller supplies each point's `id`, `text` and, optionally,
-`title`.
+`title` and `url`.
 
 ## Scribe
 
@@ -43,8 +43,8 @@ scribe whose inputs already exist.
 
 | Scribe | Stage | Default tool | Alternatives |
 |---|---|---|---|
-| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 | all-MiniLM-L6-v2; TIMC Vectorizers for special cases |
-| Reducer | Reduce | UMAP, to 2D map coordinates | |
+| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 | all-MiniLM-L6-v2 |
+| Reducer | Reduce | UMAP, to 2D map coordinates | openTSNE; PaCMAP |
 | Clusterer | Cluster | Layered HDBSCAN on the 2D map (Toponymy's `ToponymyClusterer`) | EVōC |
 | Labeler | Label | Toponymy with Gemma 4 via Ollama | |
 | Renderer | Render | DataMapPlot | |
@@ -65,9 +65,10 @@ scribes follow and never change.
 
 ## Documents table
 
-`documents`: one row per point with `id`, `text` and an optional `title`, as
-supplied by the caller. Written once and never changed. Never sent to the web
-page.
+`documents`: one row per point with `id`, `text`, an optional `title` and an
+optional `url`, as supplied by the caller. Written once and never changed.
+Only `title` and `url` reach the web page, where clicking a point opens its
+`url`; `text` never does.
 
 ## Embeddings table
 
@@ -92,7 +93,8 @@ cluster it belongs to; its ancestors come from the tree.
 
 A point's own short name, shown on hover. Usually supplied by the caller in
 `documents.title`. The Labeler fills `points.title` for every point, copying
-the caller's title or writing one for points that arrive without one. _Avoid:_
+the caller's title or, for a point without one, the first 10 or so words of
+its text. _Avoid:_
 calling it a "label".
 
 ## Label

@@ -56,12 +56,12 @@ generated committed alongside it.
 9. As a user, I want clusters named with short, human-readable labels, so that I can read the map's topics at a glance.
 10. As a user, I want coarse labels when zoomed out and finer labels when zoomed in, so that I can explore my collection at different levels of detail.
 11. As a user, I want points that belong to no cluster to stay on the map, drawn grey, so that outliers are visible rather than silently dropped.
-12. As a user whose documents have no titles, I want Seshette to give each point a short title anyway, so that hovering is always informative.
-13. As a user with a very large collection of untitled documents, I want titling to fall back to each document's first line beyond a cap, so that a run does not take hours.
+12. As a user whose documents have no titles, I want each point to show the first few words of its text instead, so that hovering and search still work.
+13. As a user with a very large collection of untitled documents, I want that fallback to cost no model calls, so that a run does not take hours.
 14. As a user, I want long documents embedded in full rather than cut off after a few hundred tokens, so that the map reflects whole documents.
 15. As a caller that already has embedding vectors, I want to supply them and skip the Embedder, so that I don't pay to embed twice.
 16. As a caller, I want to start the pipeline at any scribe whose inputs already exist, so that I can reuse earlier results or swap in my own stage.
-17. As a caller, I want to supply each point's id, text and title, so that the map uses my own names for my documents.
+17. As a caller, I want to supply each point's id, text, title and, optionally, a url, so that the map uses my own names for my documents and links back to them.
 18. As a source-specific skill in another repo, I want to use Seshette as a component rather than fork it, so that improvements to Seshette reach me automatically.
 19. As a source-specific skill author, I want a written, schema-defined input format, so that I can build against Seshette before it has any Python code.
 20. As a hackathon participant, I want to clone the Scrolls and link the skill into my own repo, so that I can use the latest Seshette with no packaging step.
@@ -86,6 +86,8 @@ generated committed alongside it.
 39. As a tester, I want a fresh agent session to succeed with `/datamap` alone, so that I know the skill works without this project's history.
 40. As a future contributor, I want the scribes' contracts described in terms of database tables, so that I can reimplement any scribe in another language.
 41. As a future contributor, I want stages whose default tool can be swapped (for example EVōC for layered HDBSCAN), so that the toolkit can grow without restructuring.
+42. As a user, I want to search the map by title, so that I can find where a particular document sits.
+43. As a user, I want to click a point and open its source document, so that I can go from the map straight to the thing itself.
 
 ## Implementation Decisions
 
@@ -94,17 +96,23 @@ generated committed alongside it.
 - Version 1 contains instructions only, with no shipped Python. The agent reads the curated upstream example code in the repo, then writes and runs the pipeline code itself. Code moves into Python as the approach stabilizes.
 - Seshette is generic: it has no knowledge of any source format. Source-specific mappers live in their own repos and call Seshette.
 - The skill consists of a top-level instruction file plus one instruction file per scribe. A caller may start at any scribe; each scribe checks that its input tables exist and conform to the schema before running.
-- When a person points `/datamap` at a folder, the top-level skill writes the `documents` table before any scribe runs: one file is one document, its `id` comes from its path within the folder, and its `title` comes from a heading or the filename when one is obvious. A source-specific caller skips this step and writes `documents` itself. Reading files is not a pipeline stage, so it is not a scribe.
+- When a person points `/datamap` at a folder, the top-level skill writes the `documents` table before any scribe runs: one file is one document, its `id` comes from its path within the folder, its `title` comes from a heading or the filename when one is obvious, and its `url` may be a `file://` link to the file. A source-specific caller skips this step and writes `documents` itself. Reading files is not a pipeline stage, so it is not a scribe.
+- Folder ingest cleans its input before writing `documents`, because very short documents form junk clusters and exact duplicates form tight, artificial ones:
+  - It skips, and reports, files that are not text (anything that does not decode as UTF-8; version 1 is text only), empty or whitespace-only files, and hidden files and folders such as `.git/`.
+  - For documents under about 20 words, it tells the user how many there are, shows a few, and asks once whether to drop them, suggesting that they be dropped. Short documents are never dropped or kept silently.
+  - For exact duplicate texts, it asks once whether to keep one file per text, suggesting that it should, and lists the files left out.
+  - Skipped and dropped files are reported to the user and in the walkthrough, not stored; `documents` holds only what is mapped.
+  - Callers that write `documents` themselves get the same advice as a warning in the instructions. Seshette does not enforce it, since a source-specific mapper may know that short or repeated records matter in its data.
 
 **Scribes (one per King Tutte pipeline stage)**
 
 | Scribe | Stage | Default tool | Documented alternatives | Writes |
 |---|---|---|---|---|
-| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 (text encoder, 768 dimensions) | all-MiniLM-L6-v2 as a lightweight fallback; TIMC Vectorizers for special cases | `embeddings` |
-| Reducer | Reduce | UMAP to 2D | | `points.x`, `points.y` |
+| Embedder | Embed | sentence-transformers with EmbeddingGemma 2 (text encoder, 768 dimensions) | all-MiniLM-L6-v2 as a lightweight fallback | `embeddings` |
+| Reducer | Reduce | UMAP to 2D | openTSNE; PaCMAP | `points.x`, `points.y` |
 | Clusterer | Cluster | Layered HDBSCAN on the Reducer's 2D map, through Toponymy's `ToponymyClusterer` | EVōC | `points.cluster`; the `clusters` table with every cluster layer and the cluster tree |
-| Labeler | Label | Toponymy for cluster labels; the same local model for missing titles | | `clusters.label`; `points.title` |
-| Renderer | Render | DataMapPlot | | the standalone datamap HTML |
+| Labeler | Label | Toponymy for cluster labels | | `clusters.label`; `points.title` |
+| Renderer | Render | DataMapPlot, with search and click-through | | the standalone datamap HTML |
 
 - The default Clusterer is the canonical, long-established path: UMAP followed by HDBSCAN. It has far more examples and experience behind it than EVōC, and the Tutte Institute's own examples supply known-good settings for the worked example's data. Once the pipeline works end to end, EVōC can be tried on harder data.
 - On the default path the Clusterer clusters the Reducer's 2D map (`points.x`, `points.y`), as Toponymy's and DataMapPlot's examples do, so the clusters match what the map shows. It uses Toponymy's `ToponymyClusterer`, a layered HDBSCAN built on `fast_hdbscan` (BSD-2-Clause, a Toponymy dependency), which produces fine-to-coarse cluster layers and the cluster tree. Plain `hdbscan` gives only one flat layer, so it is not used directly.
@@ -114,16 +122,19 @@ generated committed alongside it.
 - On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer instructions must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
 - The Embedder formats each document the way EmbeddingGemma 2 expects for documents, combining the title and text, and uses the plain document format when there is no title.
 - The Labeler uses a local model, Gemma 4 (the `e4b` size; `e2b` if memory is tight), served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
-- Point titles are normally supplied by the caller in `documents.title`. The Labeler fills `points.title` for every point: it copies the caller's title, and for points without one it asks the same local model for a short title, of similar length to Toponymy's cluster labels, up to a cap of 1,000 untitled points; above the cap, the title falls back to the first line of the text.
+- Point titles are normally supplied by the caller in `documents.title`. The Labeler fills `points.title` for every point: it copies the caller's title, and for a point without one it uses the first 10 or so words of the text, cut at a word boundary. No model writes titles.
 - The Labeler gives Toponymy the Clusterer's results rather than letting Toponymy cluster again. Toponymy skips its own clustering when handed a clusterer that already has `cluster_layers_` and `cluster_tree_` (confirmed in its source), so the Labeler builds the per-layer cluster arrays from the cluster tree and wraps them that way. Toponymy also needs a text embedding model while it labels; the Labeler uses the Embedder's model.
-- Toponymy labels clusters only, never individual points. Noise points (cluster `-1`) are never labeled and are shown grey.
+- Toponymy labels clusters only, never individual points. Noise points (cluster `-1`) are never labeled and are shown grey. DataMapPlot recognises noise by a label string, not by `-1`: when the Renderer builds the per-layer label arrays, it gives every point that is noise at that layer DataMapPlot's `noise_label` ("Unlabelled" by default), so noise draws grey instead of appearing as a cluster named "-1".
+- Density-based clustering often marks a large share of points as noise, sometimes well over 10%. At the end of every run the top-level skill tells the user the noise share at each cluster layer (for example "layer 0: 34% grey, layer 3: 8% grey"). The share is computed from `points` and the cluster tree, so nothing new is stored. If more than about half the points are noise at the finest layer, the skill explains that this is normal for HDBSCAN, names the setting to try (a lower `min_samples` on `ToponymyClusterer`), and offers to re-run from the Clusterer.
+- Noise points keep their grey colour. Recolouring them with their nearest cluster is not done in version 1.
 - Every cluster layer is labeled and kept, and the Renderer shows the layers as zoom levels.
+- The Renderer always turns on DataMapPlot's search (`enable_search=True`), which searches the hover text, that is, the titles. When points have a `url`, the Renderer passes the urls to DataMapPlot as extra point data and sets `on_click` to open the point's url; points without one are not clickable. DataMapPlot's own arXiv ML example uses both features.
 
 **Datamap database**
 - Each run reads and writes one datamap database: a folder named `datamap/` holding an Apache Iceberg database, with a pyiceberg SQL catalog stored as a single SQLite file inside the folder and table data stored as Parquet.
 - Tables are defined once, as SQL `CREATE TABLE` statements in `schema.sql`, which ships with the skill. To create the Iceberg tables, DuckDB executes the SQL in memory only to derive the column types, and pyiceberg creates the real tables from those types. Neither the agent nor a script hand-translates the schema. Scribes never alter the schema; changing it is a human decision.
 - Tables (first pass; precise column types are settled when `schema.sql` is written):
-  - `documents`: one row per point with `id`, `text` and an optional `title`. Written once, by the caller, and never changed. Never sent to the web page.
+  - `documents`: one row per point with `id`, `text`, an optional `title` and an optional `url`. Written once, by the caller, and never changed. Only `title` and `url` reach the web page; `text` never does, so the HTML stays small.
   - `embeddings`: one row per point with `id` and `high_d`, the embedding vector. Written once, by the caller or the Embedder. Large, so it is stored only here and never sent to the web page.
   - `points`: one row per point with `id`, `x`, `y`, `cluster` and `title`. Small; scribes fill its columns in pipeline order.
   - `clusters`: one row per cluster, with a `cluster` id unique across all cluster layers, its `layer`, its `parent` cluster in the next coarser layer, and its `label`. Together the rows form the cluster tree.
@@ -143,13 +154,14 @@ generated committed alongside it.
 
 **Repo additions**
 - EVōC, DataMapPlot and Toponymy are added as upstream submodules next to UMAP and HDBSCAN, unedited, so agents learn from their example code. Licenses confirmed: EVōC BSD-2-Clause, DataMapPlot MIT, Toponymy MIT.
+- Reducer alternatives, recommended by Leland McInnes in his 2025 TMLS talk, are documented but not added as submodules. Licenses confirmed: openTSNE BSD-3-Clause, PaCMAP Apache-2.0.
 - Default model licenses confirmed: Gemma 4 and EmbeddingGemma 2 are both Apache 2.0. (Earlier Gemma releases, including the original EmbeddingGemma, use the non-permissive Gemma Terms of Use; Seshette must name the version 2 and version 4 models explicitly.)
 - The README gains a section on using Seshette from another repo: clone the Scrolls and symbolically link the skill folder into that repo's skills folder, then pull to update. No plugin packaging yet.
 
 **Worked example**
-- Dataset: arXiv ML paper abstracts (the `lmcinnes/arxiv_ml` dataset, CC0), with the paper title as each point's title. The dataset's own precomputed embeddings and coordinates are ignored; Seshette computes its own.
+- Dataset: arXiv ML paper abstracts (the `lmcinnes/arxiv_ml` dataset, CC0), with the paper title as each point's title and `https://arxiv.org/abs/<arxiv_id>` as its `url`. The dataset's own precomputed embeddings and coordinates are ignored; Seshette computes its own.
 - Iterate on a fixed-seed random sample of 500 rows; the final committed run uses 5,000 rows.
-- The example commits a README walkthrough (the exact `/datamap` request, what came out, how long each stage took), the code the agent generated during the run (one file per scribe, labeled as generated by Seshette), the datamap HTML, and every table exported as Parquet.
+- The example commits a README walkthrough (the exact `/datamap` request, what came out, how long each stage took, how many files ingest skipped or dropped, and the noise share at each cluster layer), the code the agent generated during the run (one file per scribe, labeled as generated by Seshette), the datamap HTML, and every table exported as Parquet.
 - The datamap database itself is not committed, because Iceberg records absolute file paths and a committed database breaks in any other clone. The walkthrough instead has one step that loads the committed Parquet files into a fresh local datamap database, so readers can inspect plain Parquet at once and a real Iceberg database one command later.
 
 ## Testing Decisions
@@ -161,7 +173,8 @@ generated committed alongside it.
   - every `cluster` value is either a real cluster or `-1`;
   - every non-noise cluster at every cluster layer has a label;
   - no check assumes a particular number of cluster layers;
-  - the datamap HTML exists and loads in a headless browser with no script errors.
+  - the datamap HTML exists and loads in a headless browser with no script errors;
+  - the HTML has search turned on, and when `documents` has urls, the HTML contains them.
 
   The same checks apply when a caller starts mid-pipeline; only the tables after the starting scribe are checked as outputs.
 - **Supporting seam: the worked example in a fresh session.** A new Claude Code session in this repo runs `/datamap` on the 500-row sample with no other instructions. It passes when the primary-seam checks pass within about 15 minutes on the target MacBook, and a human opening the map judges that the cluster topics make sense. The human judgment is part of the test because label quality cannot be asserted automatically.
@@ -175,6 +188,10 @@ generated committed alongside it.
 - Packaging Seshette as a Claude Code plugin, or any formal distribution.
 - 3D maps, multiple embeddings per point, and non-text media (images, audio, video).
 - Paid LLM or embedding APIs as defaults.
+- TIMC Vectorizers as an Embedder. They produce sparse count vectors, which EVōC cannot take and which call for Hellinger distance rather than the cosine distance the rest of the pipeline assumes; supporting them would need a record of each run's metric.
+- Model-written titles for untitled points. A possible later upgrade; version 1 uses the first words of the text.
+- Display-only cleanup of noise points, such as recolouring them with their nearest cluster.
+- Any automated test that fails a run for having too much noise; the human check of the map covers it.
 - Comparing candidate models for labeling or embedding; that waits until the pipeline works end to end.
 - Adding new points to an existing map without re-clustering (EVōC supports only fitting and predicting in one step).
 - Reusing EVōC's nearest-neighbour graph to speed up UMAP.
