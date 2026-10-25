@@ -26,6 +26,9 @@ https://connoiter.com/blog/
 - `.scratch/` — specs and issues (the local-markdown issue tracker).
 - `docs/talks/` — curated datamapping tech talks.
   - TODO: A very early work in progress
+- `tools/` — curation tools packaged as Agent Skills (symlinked into
+  `.claude/skills/`). `tools/youtube-transcripts/` pulls talk transcripts +
+  metadata into `docs/talks/`, driven by `docs/talks/by_tutte/talks.json`.
 - `library/` — notes on specific techniques and papers.
 - `images/` — assets used by the README.
 - `repos/` — upstream git submodules (`umap`, `hdbscan`). Don't edit these;
