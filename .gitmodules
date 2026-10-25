@@ -4,7 +4,46 @@
 [submodule "repos/hdbscan"]
 	path = repos/hdbscan
 	url = https://github.com/scikit-learn-contrib/hdbscan
+[submodule "repos/toponymy"]
+	path = repos/toponymy
+	url = https://github.com/TutteInstitute/toponymy
+	shallow = true
+[submodule "repos/vectorizers"]
+	path = repos/vectorizers
+	url = https://github.com/TutteInstitute/vectorizers
+	shallow = true
+[submodule "repos/fast_hdbscan"]
+	path = repos/fast_hdbscan
+	url = https://github.com/TutteInstitute/fast_hdbscan
+	shallow = true
+[submodule "repos/evoc"]
+	path = repos/evoc
+	url = https://github.com/TutteInstitute/evoc
+	shallow = true
+[submodule "repos/datamapplot"]
+	path = repos/datamapplot
+	url = https://github.com/TutteInstitute/datamapplot
+	shallow = true
+[submodule "repos/tutorials"]
+	path = repos/tutorials
+	url = https://github.com/TutteInstitute/tutorials
+	shallow = true
+[submodule "repos/thisnotthat"]
+	path = repos/thisnotthat
+	url = https://github.com/TutteInstitute/thisnotthat
+	shallow = true
+[submodule "repos/temporal-mapper"]
+	path = repos/temporal-mapper
+	url = https://github.com/TutteInstitute/temporal-mapper
+	shallow = true
+[submodule "repos/pynndescent"]
+	path = repos/pynndescent
+	url = https://github.com/lmcinnes/pynndescent
+	shallow = true
+[submodule "repos/glasbey"]
+	path = repos/glasbey
+	url = https://github.com/lmcinnes/glasbey
+	shallow = true
 [submodule "repos/fast_plscan"]
 	path = repos/fast_plscan
 	url = https://github.com/JelmerBot/fast_plscan
-	shallow = true
