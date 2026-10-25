@@ -1,0 +1,6 @@
+[submodule "repos/umap"]
+	path = repos/umap
+	url = https://github.com/lmcinnes/umap
+[submodule "repos/hdbscan"]
+	path = repos/hdbscan
+	url = https://github.com/scikit-learn-contrib/hdbscan
