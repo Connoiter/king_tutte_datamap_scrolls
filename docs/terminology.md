@@ -63,26 +63,36 @@ catalog is a single SQLite file, with its tables stored as Parquet. It is the
 only handoff between scribes. Its table definitions live in `schema.sql`, which
 scribes follow and never change.
 
-## Inputs table
+## Documents table
 
-`inputs`: one row per point with `id`, `text`, `title` and `high_d` (the
-original embedding vector). Written once, by the caller or the Embedder. Large,
-so it is never sent to the web page.
+`documents`: one row per point with `id`, `text` and an optional `title`, as
+supplied by the caller. Written once and never changed. Never sent to the web
+page.
+
+## Embeddings table
+
+`embeddings`: one row per point with `id` and `high_d` (the original embedding
+vector). Written once, by the caller or the Embedder. Large, so the vectors
+are stored only here and never sent to the web page.
 
 ## Points table
 
-`points`: one row per point with `id`, 2D coordinates `x, y`, and `cluster`.
-Small; scribes add columns to it in pipeline order.
+`points`: one row per point with `id`, 2D coordinates `x, y`, `cluster` and
+`title`. Small; scribes fill its columns in pipeline order. Every column is
+declared in `schema.sql` from the start; scribes add data, never columns.
 
 ## Clusters table
 
-`clusters`: one row per cluster per cluster layer, with its parent in the
-cluster tree and its label.
+`clusters`: one row per cluster, with a `cluster` id unique across all
+cluster layers, its `layer`, its `parent` in the next coarser layer, and its
+`label`. The rows form the cluster tree. A point's `cluster` is the finest
+cluster it belongs to; its ancestors come from the tree.
 
 ## Title
 
-A point's own short name, shown on hover. Usually supplied by the caller; the
-Labeler writes one only for points that arrive without a title. _Avoid:_
+A point's own short name, shown on hover. Usually supplied by the caller in
+`documents.title`. The Labeler fills `points.title` for every point, copying
+the caller's title or writing one for points that arrive without one. _Avoid:_
 calling it a "label".
 
 ## Label
