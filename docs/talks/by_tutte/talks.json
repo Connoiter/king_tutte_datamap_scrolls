@@ -1,0 +1,187 @@
+[
+  {
+    "id": "AgPQ76RIi6A",
+    "file": "mcinnes_at_scipy_2016",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "SciPy 2016"
+  },
+  {
+    "id": "ayZQj4llUSU",
+    "file": "mcinnes_healy_at_pydata_dc_2016",
+    "speakers": [
+      "Leland McInnes",
+      "John Healy"
+    ],
+    "event": "PyData DC 2016"
+  },
+  {
+    "id": "nq6iPZVUxZU",
+    "file": "mcinnes_at_scipy_2018",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "SciPy 2018"
+  },
+  {
+    "id": "YPJQydzTLwQ",
+    "file": "mcinnes_at_pydata_ann_arbor_2018",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "PyData Ann Arbor 2018"
+  },
+  {
+    "id": "9iol3Lk6kyU",
+    "file": "mcinnes_at_pydata_nyc_2018",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "PyData NYC 2018"
+  },
+  {
+    "id": "CX-De6D1DMI",
+    "file": "mcinnes_at_pydata_montreal_2019",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "PyData Montreal 2019"
+  },
+  {
+    "id": "7pAVPjwBppo",
+    "file": "mcinnes_at_pydata_la_2019",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "PyData LA 2019"
+  },
+  {
+    "id": "V56tzONpouA",
+    "file": "healy_at_aatrn_2021",
+    "speakers": [
+      "John Healy"
+    ],
+    "event": "Applied Algebraic Topology Network seminar, 2021-05-03"
+  },
+  {
+    "id": "1HatYEg91z4",
+    "file": "mcinnes_at_m4csa_2022",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "M4CSA Seminar 2022"
+  },
+  {
+    "id": "FD8vKED4Mgc",
+    "file": "mcinnes_at_arize_observe_2022",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "Arize:Observe Unstructured 2022"
+  },
+  {
+    "id": "vCJKbqMwrYw",
+    "file": "mcinnes_at_python_exchange_2023",
+    "speakers": [
+      "Leland McInnes",
+      "James Powell (host)"
+    ],
+    "event": "The Python Exchange, February 2023"
+  },
+  {
+    "id": "g5DZuRDnOGY",
+    "file": "mcinnes_at_arize_2023",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "Arize AI, April 2023"
+  },
+  {
+    "id": "r8dWZX8IGw8",
+    "file": "mcinnes_at_pydata_seattle_2023",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "PyData Seattle 2023"
+  },
+  {
+    "id": "SL5A_dYPhhk",
+    "file": "mcinnes_at_openteams_roundtable_2023",
+    "speakers": [
+      "Leland McInnes",
+      "Laurens van der Maaten",
+      "Andriy Mulyar",
+      "Ben Schmidt"
+    ],
+    "event": "OpenTeams Vectors & Embeddings Roundtable, November 2023"
+  },
+  {
+    "id": "U_0GcpkjNVQ",
+    "file": "mcinnes_at_sample_space_2024",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "Sample Space podcast (Probabl), May 2024"
+  },
+  {
+    "id": "l57gu245lSw",
+    "file": "mcinnes_at_nomic_huggingface_2024",
+    "speakers": [
+      "Leland McInnes",
+      "Laurens van der Maaten",
+      "Kyunghyun Cho"
+    ],
+    "event": "Nomic x Hugging Face OS AI Event, June 2024 (panel)"
+  },
+  {
+    "id": "j1w4WHgtfDg",
+    "file": "hamelin_at_scipy_2024",
+    "speakers": [
+      "Benoit Hamelin"
+    ],
+    "event": "SciPy 2024"
+  },
+  {
+    "id": "6sSOr2Yaq80",
+    "file": "mcinnes_at_learning_from_ml_2024",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "Learning from Machine Learning #10, October 2024"
+  },
+  {
+    "id": "v_jcu7rUqqE",
+    "file": "mcinnes_at_tmls_2025",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "Toronto Machine Learning Society 2025"
+  },
+  {
+    "id": "yz-nNUDe74k",
+    "file": "mcinnes_at_ellis_unireps_2025",
+    "speakers": [
+      "Leland McInnes",
+      "Yu (Demi) Qin"
+    ],
+    "event": "ELLISxUniReps 5th Session, 2025-08-27"
+  },
+  {
+    "id": "-iBhG2Q0DII",
+    "file": "mcinnes_at_scipy_2025",
+    "speakers": [
+      "Leland McInnes"
+    ],
+    "event": "SciPy 2025"
+  },
+  {
+    "id": "ES4PPjK21TM",
+    "file": "mcinnes_at_marimo",
+    "speakers": [
+      "Leland McInnes",
+      "Vincent Warmerdam (host)"
+    ],
+    "event": "marimo livestream, April 2026"
+  }
+]
