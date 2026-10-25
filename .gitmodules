@@ -4,3 +4,7 @@
 [submodule "repos/hdbscan"]
 	path = repos/hdbscan
 	url = https://github.com/scikit-learn-contrib/hdbscan
+[submodule "repos/fast_plscan"]
+	path = repos/fast_plscan
+	url = https://github.com/JelmerBot/fast_plscan
+	shallow = true

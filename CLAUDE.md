@@ -26,6 +26,10 @@ https://connoiter.com/blog/
 - `.scratch/` — specs and issues (the local-markdown issue tracker).
 - `docs/talks/` — curated datamapping tech talks.
   - TODO: A very early work in progress
+- `docs/papers/` — annotated bibliography of datamapping papers
+  (`index.md`). The repo is used commercially: local PDFs in `pdfs/` only
+  for CC BY/CC0 papers. Never copy in anything NC, ND, arXiv-default or
+  publisher-copyright; link it with a short description instead.
 - `tools/` — curation tools packaged as Agent Skills (symlinked into
   `.claude/skills/`). `tools/youtube-transcripts/` pulls talk transcripts +
   metadata into `docs/talks/`, driven by `docs/talks/by_tutte/talks.json`.
