@@ -289,6 +289,40 @@ of this information into an Agent Skill.
   notebooks, and there is no concept of a repo just solo *.ipynb files. 
   C'est la vie.
 
+### Getting the submodules
+
+The upstream repos live under `repos/` as git submodules. They add
+almost nothing to this repo itself: each one is just a URL and a
+pointer to a specific upstream commit. But that also means a plain
+`git clone` leaves the `repos/*` directories empty.
+
+If you're working with Claude Code (or another agent that reads
+`CLAUDE.md`), it is told to fetch the submodules itself when it finds
+them empty, so you don't have to do anything. If you're on your own,
+either clone with them:
+
+```bash
+git clone --recurse-submodules https://github.com/Connoiter/king_tutte_datamap_scrolls
+```
+
+or fetch them into an existing clone:
+
+```bash
+git submodule update --init
+```
+
+Most of the submodules are shallow (latest commit only, no history),
+because some are large: `datamapplot` alone is about 900 MB. All of
+them together come to roughly 1.2 GB. Note that GitHub's "Download
+ZIP" never includes submodules.
+
+The submodules are pinned to the upstream commit they were added at.
+To move them all to the latest upstream code:
+
+```bash
+git submodule update --remote --depth 1
+```
+
 
 ## Contributing
 
