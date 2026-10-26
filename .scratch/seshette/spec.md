@@ -23,9 +23,10 @@ re-implementing the pipeline.
 
 Seshette is a generic Agent Skill, triggered by `/datamap`, that lives in this
 repo. A caller (a person or another skill) points it at a collection of
-documents, or at documents that already have embeddings, and Seshette's five
-scribes run a King Tutte pipeline locally, for free, on a modern Apple Silicon
-MacBook. The result is an interactive standalone datamap web page plus a
+documents, or at documents that already have embeddings, and Seshette spawns
+five scribes, one sub-agent per stage, each briefed by its own playbook, to run
+a King Tutte pipeline locally, for free, on a modern Apple Silicon MacBook. The
+result is an interactive standalone datamap web page plus a
 datamap database that any later tool can read.
 
 Version 1 is instructions only: the skill teaches the agent how to run each
@@ -38,6 +39,14 @@ Iceberg database whose tables are fixed by a SQL schema. The schema keeps every
 agent on course: a scribe cannot write data the schema does not allow. Because
 the database is the only handoff, a caller can start the pipeline at any
 scribe, for example by supplying its own embeddings and skipping the Embedder.
+
+The pipeline's five stages are fixed, but the tools that fill them change over
+time, and people want variants, such as EVōC in place of layered HDBSCAN. So
+Seshette is also a kit. Each stage has a playbook, the whole of what its scribe
+needs to know, so a different component means a different playbook, not a
+rebuilt pipeline. The datamap database keeps the pieces compatible, and a
+documented pattern shows how to add new scribes and their data without touching
+the core schema.
 
 The repo ships a worked example: a datamap of arXiv machine-learning paper
 abstracts, produced by actually running Seshette, with the code the agent
@@ -67,7 +76,7 @@ generated committed alongside it.
 20. As a hackathon participant, I want to clone the Scrolls and link the skill into my own repo, so that I can use the latest Seshette with no packaging step.
 21. As a hackathon participant, I want a pull of the Scrolls to update the skill I am using, so that fixes reach me immediately.
 22. As an agent running a scribe, I want the database schema to reject data of the wrong shape, so that I cannot corrupt the work of earlier scribes.
-23. As an agent running a scribe, I want each scribe's instructions to state exactly which tables and columns it reads and writes, so that I stay within my stage.
+23. As an agent running a scribe, I want each scribe's playbook to state exactly which tables and columns it reads and writes, so that I stay within my stage.
 24. As an agent, I want each scribe to point me to curated upstream example code, so that I follow known-good usage instead of improvising.
 25. As an agent, I want a sensible default tool for each stage, so that I don't stall on choices.
 26. As an agent, I want documented alternatives for each stage, so that I can adapt when the default does not fit.
@@ -88,6 +97,11 @@ generated committed alongside it.
 41. As a future contributor, I want stages whose default tool can be swapped (for example EVōC for layered HDBSCAN), so that the toolkit can grow without restructuring.
 42. As a user, I want to search the map by title, so that I can find where a particular document sits.
 43. As a user, I want to click a point and open its source document, so that I can go from the map straight to the thing itself.
+44. As a pipeline builder who wants a different component for a stage, I want to swap in another playbook for that stage, so that I don't rebuild the pipeline.
+45. As a developer who wants extra per-cluster data, such as long descriptions, I want a documented pattern for adding a side table, so that I can extend the datamap database cleanly without touching the core schema.
+46. As an agent running a scribe, I want a self-contained playbook, so that I need only a small context window and never have to learn how other scribes work.
+47. As a maintainer adding a scribe, I want it to take only a playbook and one line in the top-level instruction file, so that nothing outside the skill changes.
+48. As an agent running a scribe, I want the orchestrator to tell me about any extra data my stage should use, so that I don't have to discover it.
 
 ## Implementation Decisions
 
@@ -95,7 +109,7 @@ generated committed alongside it.
 - Seshette is an Agent Skill named `datamap` (giving the `/datamap` trigger) in this repo. "Seshette" is its project name and appears in the skill's description.
 - Version 1 contains instructions only, with no shipped Python. The agent reads the curated upstream example code in the repo, then writes and runs the pipeline code itself. Code moves into Python as the approach stabilizes.
 - Seshette is generic: it has no knowledge of any source format. Source-specific mappers live in their own repos and call Seshette.
-- The skill consists of a top-level instruction file plus one instruction file per scribe. A caller may start at any scribe; each scribe checks that its input tables exist and conform to the schema before running.
+- The skill consists of a top-level instruction file plus one playbook per scribe (see Architecture below). A caller may start at any scribe; each scribe checks that its input tables exist and conform to the schema before running.
 - When a person points `/datamap` at a folder, the top-level skill writes the `documents` table before any scribe runs: one file is one document, its `id` comes from its path within the folder, its `title` comes from a heading or the filename when one is obvious, and its `url` may be a `file://` link to the file. A source-specific caller skips this step and writes `documents` itself. Reading files is not a pipeline stage, so it is not a scribe.
 - Folder ingest cleans its input before writing `documents`, because very short documents form junk clusters and exact duplicates form tight, artificial ones:
   - It skips, and reports, files that are not text (anything that does not decode as UTF-8; version 1 is text only), empty or whitespace-only files, and hidden files and folders such as `.git/`.
@@ -103,6 +117,14 @@ generated committed alongside it.
   - For exact duplicate texts, it asks once whether to keep one file per text, suggesting that it should, and lists the files left out.
   - Skipped and dropped files are reported to the user and in the walkthrough, not stored; `documents` holds only what is mapped.
   - Callers that write `documents` themselves get the same advice as a warning in the instructions. Seshette does not enforce it, since a source-specific mapper may know that short or repeated records matter in its data.
+
+**Architecture: stages, scribes and playbooks**
+- The King Tutte pipeline's five stages (Embed, Reduce, Cluster, Label, Render) are roles. The tool that fills a role has changed over the years and still varies by situation, for example EVōC for layered HDBSCAN. Seshette is organised by role, so a different component for a stage means a different playbook, not a rebuilt pipeline. A pipeline is a path through reusable parts.
+- Vocabulary. **Seshette** is the skill and the orchestrator. A **scribe** is a sub-agent that Seshette spawns to do one job, usually one stage. A **playbook** is the markdown file inside the skill that is that scribe's whole briefing. Playbooks are plain files that Seshette reads when needed, not skills of their own.
+- A playbook is self-contained, because the scribe has nowhere else to look and its context window is meant to stay small. It states the scribe's job, the tables and columns it reads and writes, its default tool and alternatives, and where the upstream example code is. It says nothing about how other scribes work: the Embedder's playbook does not mention the Renderer. This isolation is the design, not an optimization.
+- The datamap database is the contract between scribes. A scribe only has to honour its input and output tables, so any playbook that does can fill a stage.
+- Seshette is the synchronizer. She spawns each scribe fresh with its playbook and the paths it needs, and checks that the scribe's output tables conform before spawning the next. The core stages run strictly in sequence; scribes that write only their own tables and do not read each other's output may run in parallel.
+- Playbooks ship inside the skill and are read only when needed (progressive disclosure). Seshette's top-level instruction file holds one line per scribe saying what it produces and which other scribes need to be told about it. When she spawns a scribe, she briefs it on any extra data that matters to its stage. The Renderer does not discover extension tables by itself; Seshette tells it. Adding a scribe is two edits inside the skill: its playbook, and its line in the top-level file.
 
 **Scribes (one per King Tutte pipeline stage)**
 
@@ -119,9 +141,9 @@ generated committed alongside it.
 - The Reducer always runs before the Clusterer. On the EVōC path it still runs, because EVōC produces cluster layers and a cluster tree but no 2D coordinates (confirmed in its source and by its author).
 - Cluster layers are numbered from 0, the finest, upward to the coarsest, matching both `ToponymyClusterer` and EVōC. The number of layers varies by dataset and by random seed.
 - Every random step takes a fixed `random_state`: UMAP in the Reducer, and EVōC when it is used. The worked example then comes out the same on every run.
-- On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer instructions must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
+- On the EVōC alternative, EVōC clusters the `embeddings` directly, and the Clusterer playbook must say three things (each confirmed in EVōC's source and in its author's marimo talk): build EVōC with default parameters and never pass `approx_n_clusters`, which collapses the result to a single layer; read every layer from `cluster_layers_`, never `labels_` or the `fit_predict` result, which return only the layer EVōC judges best; and pass a fixed `random_state`, since otherwise the number of layers changes between runs.
 - The default Embedder is all-MiniLM-L6-v2, for now. EmbeddingGemma 2 was the first choice, but it needs transformers 5, and Toponymy 0.5.4 (the version curated in `repos/toponymy`) requires transformers below 5. A human decided to keep the transformers 4.57 pins rather than override Toponymy's cap (see the comment on ticket 03). all-MiniLM-L6-v2 is Toponymy's own usual example embedder, is small (well under 1 GB in memory) and fast, which also eases the 16 GB memory pressure ticket 03 measured.
-- all-MiniLM-L6-v2 reads at most 256 tokens of each document and silently ignores the rest, so user story 14 (long documents embedded in full) is deferred. arXiv abstracts mostly fit. The Embedder instructions must say so, so a caller with long documents knows.
+- all-MiniLM-L6-v2 reads at most 256 tokens of each document and silently ignores the rest, so user story 14 (long documents embedded in full) is deferred. arXiv abstracts mostly fit. The Embedder playbook must say so, so a caller with long documents knows.
 - The Embedder embeds each document as its title and text together (the title, then the text), or the text alone when there is no title. all-MiniLM-L6-v2 takes no task prefix.
 - EmbeddingGemma 2 becomes the default again once Toponymy allows transformers 5. Ticket 04 found that Toponymy 0.5.4's labeling path already runs under transformers 5.20.2 with a dependency override, so this is a pin change, not a code change. It then formats documents the way its model card expects, with the plain document format when there is no title.
 - The Labeler uses a local model, Gemma 4 at the `e4b` size, as the exact Ollama tag `gemma4:e4b-it-qat` (6.1 GB, quantization-aware trained; the plain `gemma4:e4b` tag may pull a larger build), with `gemma4:e2b-it-qat` (4.3 GB) as the fallback if memory is tight, served by Ollama through Toponymy's `OllamaNamer`. Paid APIs are documented only as optional upgrades, never as the default.
@@ -135,7 +157,7 @@ generated committed alongside it.
 
 **Datamap database**
 - Each run reads and writes one datamap database: a folder named `datamap/` holding an Apache Iceberg database, with a pyiceberg SQL catalog stored as a single SQLite file inside the folder and table data stored as Parquet.
-- Tables are defined once, as SQL `CREATE TABLE` statements in `schema.sql`, which ships with the skill. To create the Iceberg tables, DuckDB executes the SQL in memory only to derive the column types, and pyiceberg creates the real tables from those types. Neither the agent nor a script hand-translates the schema. Scribes never alter the schema; changing it is a human decision.
+- Tables are defined once, as SQL `CREATE TABLE` statements in `schema.sql`, which ships with the skill. To create the Iceberg tables, DuckDB executes the SQL in memory only to derive the column types, and pyiceberg creates the real tables from those types. Neither the agent nor a script hand-translates the schema. Scribes never alter the schema; changing it is a human decision, and so is adding an extension's side table (see Extending the pipeline).
 - Tables (first pass; precise column types are settled when `schema.sql` is written):
   - `documents`: one row per point with `id`, `text`, an optional `title` and an optional `url`. Written once, by the caller, and never changed. Only `title` and `url` reach the web page; `text` never does, so the HTML stays small.
   - `embeddings`: one row per point with `id` and `high_d`, the embedding vector. Written once, by the caller or the Embedder. Large, so it is stored only here and never sent to the web page.
@@ -146,9 +168,20 @@ generated committed alongside it.
   - The Renderer turns the tree into the one label array per layer that DataMapPlot expects, then calls DataMapPlot. DataMapPlot is not modified.
   - The Labeler builds the per-layer cluster arrays Toponymy expects in the same way.
 - All joins are by `id` (or by cluster and layer), never by row order.
-- The schema is fixed: `schema.sql` declares every table and column up front, with columns that later scribes fill left nullable. A scribe adds data to its own columns; it never adds, drops or retypes a column. The rigid schema is what keeps every agent on the same pipeline.
-- Scribes run strictly in sequence, so filling a shared table's columns raises no concurrency concerns. Rewriting the small `points` and `clusters` tables is acceptable; `documents` and `embeddings` are never rewritten.
+- The core schema is fixed: `schema.sql` declares every core table and column up front, with columns that later scribes fill left nullable. A scribe adds data to its own columns; it never adds, drops or retypes a core column. The rigid core is what keeps every agent on the same pipeline. Extra data from added scribes goes in side tables instead (see Extending the pipeline).
+- The core scribes run strictly in sequence, so filling a shared table's columns raises no concurrency concerns. Scribes that write only their own side tables and do not read each other's output may run in parallel. Rewriting the small `points` and `clusters` tables is acceptable; `documents` and `embeddings` are never rewritten.
 - `schema.sql` is the first draft of the Vectron Data Map Schema.
+
+**Extending the pipeline** (a recommended pattern; the two illustrations are examples to teach it, not committed design, and some may never be built)
+- The Iceberg and Parquet tables are the main pipeline. Extra scribes are workers added onto it. The tables in `schema.sql` are the core, and no scribe adds columns to them. Anything else a scribe wants to store goes in a **side table** of its own, keyed by the id it describes (a cluster id, for example) and owned by that one scribe.
+- Why a side table rather than a new column: Iceberg can add a column to an existing table, but files written earlier have no values for it, so readers get nulls and the core contract quietly changes for everyone. A side table leaves the core untouched, lets its scribe own the data end to end, and can be dropped without harm. Long text also sits badly in a wide shared table. This is reasoned from general Iceberg practice and has not been tried in this repo yet.
+- A side table is declared in SQL that ships beside its scribe's playbook and is created by the same route as the core tables, so a person chooses to add it and a running agent never invents one. (Proposed; see the open questions ticket.)
+- Large files, such as images, are stored as files inside the datamap folder, with a relative path in the side table, not as table values. Iceberg handles big binary values poorly: they bloat data files and slow scans, and files can be fetched on demand over HTTP. Paths are relative to the datamap folder, because Iceberg records absolute paths in its own metadata and a moved folder must still work; the same relative path then works on disk and as a URL under a hosted copy.
+- Illustration 1, cluster descriptions. When the Labeler asks Toponymy to name a cluster, Toponymy has already chosen the exemplar documents for it, so the Labeler can ask in the same call for a page-long description as well as the short label, and write it to a side table (for example `cluster_descriptions`, one row per cluster). A separate Describer scribe would repeat the exemplar selection and pay for a second model call per cluster. The lesson: split scribes along data contracts, not along ideas that share the same inputs.
+- Illustration 2, cover images. A Cover Artist scribe reads the descriptions side table, turns each description into an image prompt, generates an image with an image model, writes the file into the datamap folder, and records its relative path in a side table. It reads one table, writes one table and calls a different model, so it is a genuinely separate scribe, and the Labeler never needs to know it exists. Whether prompt writing and image generation are one scribe or two is for whoever builds it.
+- Showing extension data is the Renderer's business, and Seshette tells it what exists (see Architecture). How a particular web app presents the data is out of scope here. DataMapPlot's documented tooltip works per point, so showing a per-cluster description means extra code in the generated web app.
+- Storage and rendering are separate choices. The rules above govern the datamap database. The Renderer's output mode, one standalone HTML file (DataMapPlot's `inline_data=True`, its default, and the version 1 output) or separate data files served over HTTP (`inline_data=False`), is the Renderer's decision. Side-file designs such as the cover images assume the separate-files mode.
+- The database stays plain Parquet under Iceberg, so any reader can load it. How a browser reads it, for example Vectron's reader, is out of scope.
 
 **Scope limits for version 1** (matching Vectron v1): 2D maps only, one embedding per point, text only.
 
@@ -201,6 +234,9 @@ generated committed alongside it.
 - Reusing EVōC's nearest-neighbour graph to speed up UMAP.
 - Finalizing the Vectron Data Map Schema.
 - A hosted copy of the worked example's datamap.
+- Building the illustration scribes (cluster descriptions, Cover Artist). They document the extension pattern; some may be built later.
+- How a browser reads the datamap database, and how any web app displays extension data, including DataMapPlot's dynamic tooltip hooks.
+- Running Seshette on an agent host that cannot spawn sub-agents (see the open questions ticket).
 
 ## Further Notes
 
@@ -208,7 +244,9 @@ generated committed alongside it.
   - That DuckDB can derive column types from `schema.sql` cleanly enough for pyiceberg to create the tables, including the vector column.
   - That Gemma 4 (`gemma4:e4b-it-qat`) and the embedding model fit comfortably in memory together on a 16 GB MacBook.
   - That Toponymy's Ollama namer works with Gemma 4 and reliably gets the structured answers Toponymy expects.
+  - For the cluster-description illustration: that Toponymy's namer can return a long description alongside the short label in one call. Check `repos/toponymy` before relying on it.
+  - That a side table declared in SQL beside a playbook can be created by the same DuckDB-then-pyiceberg route as the core tables.
 - Toponymy's Ollama namer defaults to a Llama model, whose license is not permissive; Seshette must always name Gemma 4 explicitly.
 - The schema intentionally starts loose ("first pass, don't sweat the details"); expect it to change after the first real run.
-- Naming: the scribes are named after the five stages. "Surveyor" and "Cartographer" remain only as the blog's two-step overview. Spell the project name "Seshette".
+- Naming: the scribes are named after the five stages. "Surveyor" and "Cartographer" remain only as the blog's two-step overview. Spell the project name "Seshette". Say "scribe" for the sub-agent and "playbook" for its file; avoid "sub-skill" and "instruction file" for either.
 - Background reading: the Connoiter blog posts on the data map pipeline, data map production and version one goals, and the Leland McInnes talk transcript curated under the docs talks folder.

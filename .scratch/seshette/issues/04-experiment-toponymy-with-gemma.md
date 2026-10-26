@@ -133,7 +133,7 @@ needed. This supports ticket 03's option A; the pin decision is still the
 human's.
 
 **Spec impact** (for the human; spec not edited):
-1. The Labeler instructions must set `OllamaNamer(model="gemma4:e4b-it-qat",
+1. The Labeler playbook must set `OllamaNamer(model="gemma4:e4b-it-qat",
    provider_kwargs={"think": False, "num_ctx": 16384})`. Without `think`, every
    label is empty; without `num_ctx`, disambiguation silently fails. Memory
    cost of the 16K context was not measured (03 measured 4K).

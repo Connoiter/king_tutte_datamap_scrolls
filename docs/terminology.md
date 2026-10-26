@@ -24,9 +24,10 @@ post.
 The generic datamapping Agent Skill in this repo, triggered by `/datamap`.
 Named as a variant of [Seshat](https://en.wikipedia.org/wiki/Seshat), the
 Egyptian goddess of writing and "mistress of the house of books". Seshette is a
-toolkit: a user or another skill (a caller) hands it data, and its scribes run
-a King Tutte pipeline locally. It knows nothing about any particular source
-format. _Avoid:_ "Seshat", "Sachet".
+toolkit and the orchestrator: a user or another skill (a caller) hands it data,
+and she spawns scribes to run a King Tutte pipeline locally, handing each its
+playbook and checking each handoff. It knows nothing about any particular
+source format. _Avoid:_ "Seshat", "Sachet".
 
 ## Caller
 
@@ -37,9 +38,11 @@ component. The caller supplies each point's `id`, `text` and, optionally,
 
 ## Scribe
 
-One of Seshette's sub-skills, one per pipeline stage. Each scribe reads from
-and writes to the datamap database. A caller may start the pipeline at any
-scribe whose inputs already exist.
+A sub-agent that Seshette spawns to do one job, normally one pipeline stage. A
+scribe is briefed by its playbook and nothing else, and reads from and writes
+to the datamap database. A caller may start the pipeline at any scribe whose
+inputs already exist. Added scribes (extensions) work the same way. _Avoid:_
+"sub-skill"; a scribe is not a skill and not a file.
 
 | Scribe | Stage | Default tool | Alternatives |
 |---|---|---|---|
@@ -48,6 +51,15 @@ scribe whose inputs already exist.
 | Clusterer | Cluster | Layered HDBSCAN on the 2D map (Toponymy's `ToponymyClusterer`) | EVōC |
 | Labeler | Label | Toponymy with Gemma 4 via Ollama | |
 | Renderer | Render | DataMapPlot | |
+
+## Playbook
+
+The markdown file inside the skill that is one scribe's whole briefing: its
+job, the tables and columns it reads and writes, its default tool and
+alternatives, and pointers to upstream example code. It is self-contained and
+says nothing about how other scribes work, so the scribe's context window stays
+small. Seshette reads playbooks only when she needs them. _Avoid:_
+"instruction file", "sub-skill".
 
 ## Surveyor and Cartographer
 
@@ -60,8 +72,16 @@ after the five stages.
 
 The `datamap/` folder a run reads and writes: an Apache Iceberg database whose
 catalog is a single SQLite file, with its tables stored as Parquet. It is the
-only handoff between scribes. Its table definitions live in `schema.sql`, which
-scribes follow and never change.
+only handoff between scribes. Its core table definitions live in `schema.sql`,
+which scribes follow and never change.
+
+## Side table
+
+A table added by one extension scribe, keyed by the id it describes (for
+example a cluster id), instead of new columns on a core table. It leaves the
+core schema untouched and can be dropped without harm. Declared in SQL beside
+the scribe's playbook. Large files, such as images, stay as files in the
+`datamap/` folder, with a relative path in the side table.
 
 ## Documents table
 
